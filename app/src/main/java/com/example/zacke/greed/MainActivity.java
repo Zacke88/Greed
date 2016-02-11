@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean threeOfOnes = false;
     private boolean threeOfFives = false;
     private boolean sixOfAKind = false;
+    private boolean roundOne = true;
 
     private TextView roundScorePortrait;
     private TextView totalScorePortrait;
@@ -262,9 +263,16 @@ public class MainActivity extends AppCompatActivity {
         setScoreText();
         setActiveDices();
 
-        if(PLAYER.getRoundScore() == 0 || PLAYER.getRoundScore() == previousRoundScore) {
+        //Starts a new round if criteria for round score not met
+        if(PLAYER.getRoundScore() < 300 && roundOne) {
+            PLAYER.setRoundScore(0);
+            newRound();
+        } else if(PLAYER.getRoundScore() == 0 || PLAYER.getRoundScore() ==
+                previousRoundScore) {
+            PLAYER.setRoundScore(0);
             newRound();
         }
+        roundOne = false;
     }
 
     /**
@@ -414,6 +422,7 @@ public class MainActivity extends AppCompatActivity {
         PLAYER.setRounds(PLAYER.getRounds()+1);
         PLAYER.setTotalScore(PLAYER.getRoundScore()+PLAYER.getTotalScore());
         PLAYER.setRoundScore(0);
+        roundOne = true;
         for(Dice dice: PLAYER.getDiceList()) {
             dice.setDiceActive(true);
         }

@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private int fives = 0;
     private int sixes = 0;
     private int diceCount = 0;
+    private int previousRoundScore = 0;
 
     private boolean straight = false;
     private boolean threeOfOnes = false;
@@ -113,10 +114,12 @@ public class MainActivity extends AppCompatActivity {
         totalScoreLandscape.setText("");
 
         if(getResources().getConfiguration().orientation == 1) {
-            roundScorePortrait.setText(String.valueOf(PLAYER.getRoundScore()));
+            roundScorePortrait.setText(String.valueOf(PLAYER.getRoundScore()
+                    +" (+"+(PLAYER.getRoundScore()-previousRoundScore)+")"));
             totalScorePortrait.setText(String.valueOf(PLAYER.getTotalScore()));
         } else {
-            roundScoreLandscape.setText(String.valueOf(PLAYER.getRoundScore()));
+            roundScoreLandscape.setText(String.valueOf(PLAYER.getRoundScore()
+                    +" (+"+(PLAYER.getRoundScore()-previousRoundScore)+")"));
             totalScoreLandscape.setText(String.valueOf(PLAYER.getTotalScore()));
         }
     }
@@ -171,16 +174,9 @@ public class MainActivity extends AppCompatActivity {
      * Calculates the score a user gets on one throw for the active dices
      */
     public void calculateScore() {
-        ones = 0;
-        twos = 0;
-        threes = 0;
-        fours = 0;
-        fives = 0;
-        sixes = 0;
-        straight = false;
-        threeOfOnes = false;
-        threeOfFives = false;
-        sixOfAKind = false;
+
+        resetDiceState();
+        previousRoundScore = PLAYER.getRoundScore();
 
         for(Dice dice: PLAYER.getDiceList()) {
             if(dice.getDiceValue() == 1 && dice.isDiceActive()) {
@@ -266,9 +262,26 @@ public class MainActivity extends AppCompatActivity {
         setScoreText();
         setActiveDices();
 
-        if(PLAYER.getRoundScore() == 0) {
+        if(PLAYER.getRoundScore() == 0 || PLAYER.getRoundScore() == previousRoundScore) {
             newRound();
         }
+    }
+
+    /**
+     * Resets the dices and scores to 0, should be called before making a new
+     * score calculation
+     */
+    public void resetDiceState() {
+        ones = 0;
+        twos = 0;
+        threes = 0;
+        fours = 0;
+        fives = 0;
+        sixes = 0;
+        straight = false;
+        threeOfOnes = false;
+        threeOfFives = false;
+        sixOfAKind = false;
     }
 
     /**

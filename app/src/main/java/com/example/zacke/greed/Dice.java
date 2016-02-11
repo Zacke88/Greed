@@ -8,7 +8,7 @@ import android.graphics.Bitmap;
 public class Dice {
 
     private int diceValue;
-    private boolean diceActive;
+    private boolean diceActive = true;
     private Bitmap diceImage;
 
     public int getDiceValue() {

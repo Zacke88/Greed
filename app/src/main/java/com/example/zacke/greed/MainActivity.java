@@ -22,6 +22,18 @@ public class MainActivity extends AppCompatActivity {
     private ImageView dice5Image;
     private ImageView dice6Image;
 
+    private int ones = 0;
+    private int twos = 0;
+    private int threes = 0;
+    private int fours = 0;
+    private int fives = 0;
+    private int sixes = 0;
+
+    private boolean straight = false;
+    private boolean threeOfOnes = false;
+    private boolean threeOfFives = false;
+    private boolean sixOfAKind = false;
+
     private TextView roundScorePortrait;
     private TextView totalScorePortrait;
     private TextView roundScoreLandscape;
@@ -42,9 +54,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if(PLAYER.getDiceList().isEmpty()) {
+            PLAYER.getDiceList().add(DICE1);
+            PLAYER.getDiceList().add(DICE2);
+            PLAYER.getDiceList().add(DICE3);
+            PLAYER.getDiceList().add(DICE4);
+            PLAYER.getDiceList().add(DICE5);
+            PLAYER.getDiceList().add(DICE6);
+        }
+
         setDices();
         setScoreText();
-        newRound();
+        //newRound();
         throwDices();
     }
 
@@ -107,33 +128,35 @@ public class MainActivity extends AppCompatActivity {
     public void throwDices() {
 
         for(Dice dice: PLAYER.getDiceList()) {
-            dice.setDiceValue(rand.nextInt(7 - 1) + 1);
-            if(dice.getDiceValue() == 1) {
+            if(dice.isDiceActive()) {
+                dice.setDiceValue(rand.nextInt(7 - 1) + 1);
+            }
+            if(dice.getDiceValue() == 1 && dice.isDiceActive()) {
                 dice.setDiceImage(BitmapFactory.decodeResource(this
                                 .getResources(),
                         R.drawable.grey1));
             }
-            if(dice.getDiceValue() == 2) {
+            if(dice.getDiceValue() == 2 && dice.isDiceActive()) {
                 dice.setDiceImage(BitmapFactory.decodeResource(this
                                 .getResources(),
                         R.drawable.grey2));
             }
-            if(dice.getDiceValue() == 3) {
+            if(dice.getDiceValue() == 3 && dice.isDiceActive()) {
                 dice.setDiceImage(BitmapFactory.decodeResource(this
                                 .getResources(),
                         R.drawable.grey3));
             }
-            if(dice.getDiceValue() == 4) {
+            if(dice.getDiceValue() == 4 && dice.isDiceActive()) {
                 dice.setDiceImage(BitmapFactory.decodeResource(this
                                 .getResources(),
                         R.drawable.grey4));
             }
-            if(dice.getDiceValue() == 5) {
+            if(dice.getDiceValue() == 5 && dice.isDiceActive()) {
                 dice.setDiceImage(BitmapFactory.decodeResource(this
                                 .getResources(),
                         R.drawable.grey5));
             }
-            if(dice.getDiceValue() == 6) {
+            if(dice.getDiceValue() == 6 && dice.isDiceActive()) {
                 dice.setDiceImage(BitmapFactory.decodeResource(this
                                 .getResources(),
                         R.drawable.grey6));
@@ -154,17 +177,142 @@ public class MainActivity extends AppCompatActivity {
      * Calculates the score a user gets on one throw for the active dices
      */
     public void calculateScore() {
+        PLAYER.setRoundScore(0);
+        ones = 0;
+        twos = 0;
+        threes = 0;
+        fours = 0;
+        fives = 0;
+        sixes = 0;
+        straight = false;
+        threeOfOnes = false;
+        threeOfFives = false;
+        sixOfAKind = false;
+
+        for(Dice dice: PLAYER.getDiceList()) {
+            if(dice.getDiceValue() == 1 && dice.isDiceActive()) {
+                ones++;
+            }
+            if(dice.getDiceValue() == 2 && dice.isDiceActive()) {
+                twos++;
+            }
+            if(dice.getDiceValue() == 3 && dice.isDiceActive()) {
+                threes++;
+            }
+            if(dice.getDiceValue() == 4 && dice.isDiceActive()) {
+                fours++;
+            }
+            if(dice.getDiceValue() == 5 && dice.isDiceActive()) {
+                fives++;
+            }
+            if(dice.getDiceValue() == 6 && dice.isDiceActive()) {
+                sixes++;
+            }
+        }
+
+        // Straight
+        if(ones == 1 && twos == 1 && threes == 1 && fours == 1 && fives == 1
+                && sixes == 1) {
+            PLAYER.setRoundScore(PLAYER.getRoundScore()+1000);
+            straight = true;
+        }
+        // Threee of a kind
+        if(ones == 6) {
+            PLAYER.setRoundScore(PLAYER.getRoundScore()+(1000*2));
+            sixOfAKind = true;
+        } else if(ones >= 3) {
+            PLAYER.setRoundScore(PLAYER.getRoundScore()+1000);
+            threeOfOnes = true;
+        }
+        if(twos == 6) {
+            PLAYER.setRoundScore(PLAYER.getRoundScore()+(200*2));
+            sixOfAKind = true;
+        } else if(twos >= 3) {
+            PLAYER.setRoundScore(PLAYER.getRoundScore()+200);
+        }
+        if(threes == 6) {
+            PLAYER.setRoundScore(PLAYER.getRoundScore()+(300*2));
+            sixOfAKind = true;
+        } else if(threes >= 3) {
+            PLAYER.setRoundScore(PLAYER.getRoundScore()+300);
+        }
+        if(fours == 6) {
+            PLAYER.setRoundScore(PLAYER.getRoundScore()+(400*2));
+            sixOfAKind = true;
+        } else if(fours >= 3) {
+            PLAYER.setRoundScore(PLAYER.getRoundScore()+400);
+        }
+        if(fives == 6) {
+            PLAYER.setRoundScore(PLAYER.getRoundScore()+(500*2));
+            sixOfAKind = true;
+        } else if(fives >= 3) {
+            PLAYER.setRoundScore(PLAYER.getRoundScore()+500);
+            threeOfFives = true;
+        }
+        if(sixes == 6) {
+            PLAYER.setRoundScore(PLAYER.getRoundScore()+(600*2));
+            sixOfAKind = true;
+        } else if(sixes >= 3) {
+            PLAYER.setRoundScore(PLAYER.getRoundScore()+600);
+        }
+
+        // Ones and fives
+        if(!sixOfAKind && !straight) {
+            if(threeOfOnes) {
+                PLAYER.setRoundScore(PLAYER.getRoundScore()+(100*(ones-3)));
+            } else {
+                PLAYER.setRoundScore(PLAYER.getRoundScore()+(100*ones));
+            }
+            if(threeOfFives) {
+                PLAYER.setRoundScore(PLAYER.getRoundScore()+(50*(fives-3)));
+            } else {
+                PLAYER.setRoundScore(PLAYER.getRoundScore()+(50*fives));
+            }
+        }
+
+        PLAYER.setTotalScore(PLAYER.getRoundScore()+PLAYER.getTotalScore());
+        setScoreText();
+        setActiveDices();
+
+        if(PLAYER.getRoundScore() == 0) {
+            newRound();
+        }
+
+
+
+
+
+    }
+
+    public void setActiveDices() {
+        for(Dice dice: PLAYER.getDiceList()) {
+            if(dice.getDiceValue() == 1) {
+                dice.setDiceImage(BitmapFactory.decodeResource(this
+                                .getResources(),
+                        R.drawable.white1));
+                dice.setDiceActive(false);
+            }
+            if(dice.getDiceValue() == 5) {
+                dice.setDiceImage(BitmapFactory.decodeResource(this
+                                .getResources(),
+                        R.drawable.white5));
+                dice.setDiceActive(false);
+            }
+        }
+        dice1Image.setImageBitmap(DICE1.getDiceImage());
+        dice2Image.setImageBitmap(DICE2.getDiceImage());
+        dice3Image.setImageBitmap(DICE3.getDiceImage());
+        dice4Image.setImageBitmap(DICE4.getDiceImage());
+        dice5Image.setImageBitmap(DICE5.getDiceImage());
+        dice6Image.setImageBitmap(DICE6.getDiceImage());
 
     }
 
     public void newRound() {
-        PLAYER.getDiceList().clear();
-        PLAYER.getDiceList().add(DICE1);
-        PLAYER.getDiceList().add(DICE2);
-        PLAYER.getDiceList().add(DICE3);
-        PLAYER.getDiceList().add(DICE4);
-        PLAYER.getDiceList().add(DICE5);
-        PLAYER.getDiceList().add(DICE6);
+        PLAYER.setRounds(PLAYER.getRounds()+1);
+        for(Dice dice: PLAYER.getDiceList()) {
+            dice.setDiceActive(true);
+        }
     }
 
 }

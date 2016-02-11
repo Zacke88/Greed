@@ -12,7 +12,7 @@ public class Player {
 
     private int roundScore = 0;
     private int totalScore = 0;
-    private int rounds = 0;
+    private int rounds = 1;
     private ArrayList<Dice> diceList = new ArrayList<>();
 
     public int getRoundScore() {

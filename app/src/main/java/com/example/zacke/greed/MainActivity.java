@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     private int fours = 0;
     private int fives = 0;
     private int sixes = 0;
+    private int diceCount = 0;
 
     private boolean straight = false;
     private boolean threeOfOnes = false;
@@ -162,14 +163,7 @@ public class MainActivity extends AppCompatActivity {
                         R.drawable.grey6));
             }
         }
-
-        dice1Image.setImageBitmap(DICE1.getDiceImage());
-        dice2Image.setImageBitmap(DICE2.getDiceImage());
-        dice3Image.setImageBitmap(DICE3.getDiceImage());
-        dice4Image.setImageBitmap(DICE4.getDiceImage());
-        dice5Image.setImageBitmap(DICE5.getDiceImage());
-        dice6Image.setImageBitmap(DICE6.getDiceImage());
-
+        updateDiceImages();
         calculateScore();
     }
 
@@ -177,7 +171,6 @@ public class MainActivity extends AppCompatActivity {
      * Calculates the score a user gets on one throw for the active dices
      */
     public void calculateScore() {
-        PLAYER.setRoundScore(0);
         ones = 0;
         twos = 0;
         threes = 0;
@@ -270,46 +263,144 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        PLAYER.setTotalScore(PLAYER.getRoundScore()+PLAYER.getTotalScore());
         setScoreText();
         setActiveDices();
 
         if(PLAYER.getRoundScore() == 0) {
             newRound();
         }
-
-
-
-
-
     }
 
+    /**
+     * Sets all dices that was giving score to inactive and updates their images
+     */
     public void setActiveDices() {
+
+        //Straight or six of a kind
+        if (straight || sixOfAKind) {
+            for(Dice dice: PLAYER.getDiceList()) {
+                dice.setDiceActive(false);
+            }
+        } else {
+            //Three of ones
+            if (ones >= 3) {
+                diceCount = 0;
+                for (Dice dice : PLAYER.getDiceList()) {
+                    if (dice.getDiceValue() == 1 && diceCount < 3) {
+                        dice.setDiceImage(BitmapFactory.decodeResource(this
+                                        .getResources(),
+                                R.drawable.white1));
+                        dice.setDiceActive(false);
+                        diceCount++;
+                    }
+                }
+            }
+            //Three of twos
+            if (twos >= 3) {
+                diceCount = 0;
+                for (Dice dice : PLAYER.getDiceList()) {
+                    if (dice.getDiceValue() == 2 && diceCount < 3) {
+                        dice.setDiceImage(BitmapFactory.decodeResource(this
+                                        .getResources(),
+                                R.drawable.white2));
+                        dice.setDiceActive(false);
+                        diceCount++;
+                    }
+                }
+            }
+            //Three of threes
+            if (threes >= 3) {
+                diceCount = 0;
+                for (Dice dice : PLAYER.getDiceList()) {
+                    if (dice.getDiceValue() == 3 && diceCount < 3) {
+                        dice.setDiceImage(BitmapFactory.decodeResource(this
+                                        .getResources(),
+                                R.drawable.white3));
+                        dice.setDiceActive(false);
+                        diceCount++;
+                    }
+                }
+            }
+            //Three of fours
+            if (fours >= 3) {
+                diceCount = 0;
+                for (Dice dice : PLAYER.getDiceList()) {
+                    if (dice.getDiceValue() == 4 && diceCount < 3) {
+                        dice.setDiceImage(BitmapFactory.decodeResource(this
+                                        .getResources(),
+                                R.drawable.white4));
+                        dice.setDiceActive(false);
+                        diceCount++;
+                    }
+                }
+            }
+            //Three of fives
+            if (fives >= 3) {
+                diceCount = 0;
+                for (Dice dice : PLAYER.getDiceList()) {
+                    if (dice.getDiceValue() == 5 && diceCount < 3) {
+                        dice.setDiceImage(BitmapFactory.decodeResource(this
+                                        .getResources(),
+                                R.drawable.white5));
+                        dice.setDiceActive(false);
+                        diceCount++;
+                    }
+                }
+            }
+            //Three of sixes
+            if (sixes >= 3) {
+                diceCount = 0;
+                for (Dice dice : PLAYER.getDiceList()) {
+                    if (dice.getDiceValue() == 6 && diceCount < 3) {
+                        dice.setDiceImage(BitmapFactory.decodeResource(this
+                                        .getResources(),
+                                R.drawable.white6));
+                        dice.setDiceActive(false);
+                        diceCount++;
+                    }
+                }
+            }
+        }
+
+        // Losse one or fives
         for(Dice dice: PLAYER.getDiceList()) {
-            if(dice.getDiceValue() == 1) {
+            if(dice.getDiceValue() == 1 && dice.isDiceActive()) {
                 dice.setDiceImage(BitmapFactory.decodeResource(this
                                 .getResources(),
                         R.drawable.white1));
                 dice.setDiceActive(false);
             }
-            if(dice.getDiceValue() == 5) {
+            if(dice.getDiceValue() == 5 && dice.isDiceActive()) {
                 dice.setDiceImage(BitmapFactory.decodeResource(this
                                 .getResources(),
                         R.drawable.white5));
                 dice.setDiceActive(false);
             }
         }
+        updateDiceImages();
+    }
+
+    /**
+     * Updates the images for all dices which shows if they are active or not
+     */
+    public void updateDiceImages() {
         dice1Image.setImageBitmap(DICE1.getDiceImage());
         dice2Image.setImageBitmap(DICE2.getDiceImage());
         dice3Image.setImageBitmap(DICE3.getDiceImage());
         dice4Image.setImageBitmap(DICE4.getDiceImage());
         dice5Image.setImageBitmap(DICE5.getDiceImage());
         dice6Image.setImageBitmap(DICE6.getDiceImage());
-
     }
 
+    /**
+     * Should be called each time a new round starts, sets all dices to
+     * active and adds points to a players total score aswell as incrementing
+     * total rounds played
+     */
     public void newRound() {
         PLAYER.setRounds(PLAYER.getRounds()+1);
+        PLAYER.setTotalScore(PLAYER.getRoundScore()+PLAYER.getTotalScore());
+        PLAYER.setRoundScore(0);
         for(Dice dice: PLAYER.getDiceList()) {
             dice.setDiceActive(true);
         }

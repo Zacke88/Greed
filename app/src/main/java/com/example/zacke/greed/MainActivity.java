@@ -3,11 +3,10 @@ package com.example.zacke.greed;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -37,6 +36,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean sixOfAKind = false;
     private boolean roundOne = true;
 
+    private Button throwButton;
+    private Button scoreButton;
+
     private TextView roundScorePortrait;
     private TextView totalScorePortrait;
     private TextView roundScoreLandscape;
@@ -57,6 +59,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        setDices();
+        setButtons();
+        setScoreText();
+    }
+
+    /**
+     * Sets the dices as ImageViews of the application and scales them
+     * accordingly
+     */
+    public void setDices() {
         if(PLAYER.getDiceList().isEmpty()) {
             PLAYER.getDiceList().add(DICE1);
             PLAYER.getDiceList().add(DICE2);
@@ -66,17 +78,6 @@ public class MainActivity extends AppCompatActivity {
             PLAYER.getDiceList().add(DICE6);
         }
 
-        setDices();
-        setScoreText();
-        //newRound();
-        throwDices();
-    }
-
-    /**
-     * Sets the dices as ImageViews of the application and scales them
-     * accordingly
-     */
-    public void setDices() {
         TextView text = (TextView) findViewById(R.id.dicePos);
         text.setText("");
 
@@ -98,6 +99,13 @@ public class MainActivity extends AppCompatActivity {
         dice6Image = (ImageView) findViewById(R.id.diceBottomRight);
         dice6Image.setScaleX((float) 0.7);
         dice6Image.setScaleY((float) 0.7);
+    }
+
+    public void setButtons() {
+        scoreButton = (Button) findViewById(R.id.scoreButton);
+        scoreButton.setOnClickListener(new ScoreListener());
+        throwButton = (Button) findViewById(R.id.throwButton);
+        throwButton.setOnClickListener(new ThrowListener());
     }
 
     /**
@@ -428,4 +436,20 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public class ThrowListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            throwDices();
+        }
+    }
+
+    public class ScoreListener implements View.OnClickListener {
+
+        @Override
+        public void onClick(View v) {
+            newRound();
+        }
+    }
 }
+

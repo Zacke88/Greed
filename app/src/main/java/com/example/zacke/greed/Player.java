@@ -16,10 +16,9 @@ public class Player {
     private int maxRoundScore = 0;
     private int totalScore = 0;
     private int rounds = 1;
-    private int winScore = 100;
+    private int winScore = 10000;
     private ArrayList<Dice> diceList = new ArrayList<>();
     private boolean firstRound = true;
-    //private boolean selectedThisRound = false;
 
     public int getRoundScore() {
         return roundScore;
@@ -49,10 +48,6 @@ public class Player {
         return diceList;
     }
 
-    public void setDiceList(ArrayList<Dice> diceList) {
-        this.diceList = diceList;
-    }
-
     public boolean isFirstRound() {
         return firstRound;
     }
@@ -60,16 +55,6 @@ public class Player {
     public void setFirstRound(boolean firstRound) {
         this.firstRound = firstRound;
     }
-
-    /*
-    public boolean isSelectedThisRound() {
-        return selectedThisRound;
-    }
-
-    public void setSelectedThisRound(boolean selectedThisRound) {
-        this.selectedThisRound = selectedThisRound;
-    }
-    */
 
     public int getMaxRoundScore() {
         return maxRoundScore;
@@ -89,9 +74,5 @@ public class Player {
 
     public int getWinScore() {
         return winScore;
-    }
-
-    public void setWinScore(int winScore) {
-        this.winScore = winScore;
     }
 }

@@ -210,6 +210,7 @@ public class MainActivity extends AppCompatActivity {
      * Method for "throwing" 6 dices and randomizes the number of each dice
      * with a value ranging from 1-6. Then sets the value for each dice and
      * adds and shows a corresponding image for that value
+     * Dices being "thrown" is only the active dices
      */
     public void throwDices() {
         for (Dice dice : PLAYER.getDiceList()) {
@@ -248,6 +249,12 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Calculates the score a user gets on one throw for the selected dices
+     * The inital score is calculated only by the active dices whereas the
+     * round score is then calculated byt the dices selected by the player
+     *
+     * Inactive dices which is dices already used to calculate score during
+     * this round will not be used to further calculate the score since they
+     * already gave points for total round scoer
      *
      * @param checkCriteria boolean which is set to true to check if a
      *                      criteria for a round is met, ie to get at least
@@ -415,7 +422,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Sets all dices that was giving score to inactive and updates their
+     * Sets all dices that is able to give score to inactive and updates their
      * images to make them appear white
      */
     public void setActiveDices() {

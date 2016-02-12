@@ -195,12 +195,12 @@ public class MainActivity extends AppCompatActivity {
 
         if (getResources().getConfiguration().orientation == 1) {
             roundScorePortrait.setText(String.valueOf(PLAYER.getRoundScore())
-                    +" ("+ String.valueOf(PLAYER.getThrowScore())+"/"+String
+                    +" (+"+ String.valueOf(PLAYER.getThrowScore())+"/"+String
                     .valueOf(PLAYER.getMaxRoundScore()+")"));
             totalScorePortrait.setText(String.valueOf(PLAYER.getTotalScore()));
         } else {
             roundScoreLandscape.setText(String.valueOf(PLAYER.getRoundScore())
-                    +" ("+ String.valueOf(PLAYER.getThrowScore())+"/"+String
+                    +" (+"+ String.valueOf(PLAYER.getThrowScore())+"/"+String
                     .valueOf(PLAYER.getMaxRoundScore()+")"));
             totalScoreLandscape.setText(String.valueOf(PLAYER.getTotalScore()));
         }

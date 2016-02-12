@@ -96,6 +96,10 @@ public class MainActivity extends AppCompatActivity {
         dice6Image.setScaleY((float) 0.7);
     }
 
+    /**
+     * Sets the buttons to corresponding button from the view and adds
+     * listeners to them
+     */
     public void setButtons() {
         Button scoreButton = (Button) findViewById(R.id.scoreButton);
         scoreButton.setOnClickListener(new ScoreListener());
@@ -307,6 +311,31 @@ public class MainActivity extends AppCompatActivity {
         if (straight || sixOfAKind) {
             for(Dice dice: PLAYER.getDiceList()) {
                 dice.setDiceActive(false);
+                if (dice.getDiceValue() == 1) {
+                    dice.setDiceImage(BitmapFactory.decodeResource(this
+                                    .getResources(),
+                            R.drawable.white1));
+                } else if (dice.getDiceValue() == 2) {
+                    dice.setDiceImage(BitmapFactory.decodeResource(this
+                                    .getResources(),
+                            R.drawable.white2));
+                } else if (dice.getDiceValue() == 3) {
+                    dice.setDiceImage(BitmapFactory.decodeResource(this
+                                    .getResources(),
+                            R.drawable.white3));
+                } else if (dice.getDiceValue() == 4) {
+                    dice.setDiceImage(BitmapFactory.decodeResource(this
+                                    .getResources(),
+                            R.drawable.white4));
+                } else if (dice.getDiceValue() == 5) {
+                    dice.setDiceImage(BitmapFactory.decodeResource(this
+                                    .getResources(),
+                            R.drawable.white5));
+                } else if (dice.getDiceValue() == 6) {
+                    dice.setDiceImage(BitmapFactory.decodeResource(this
+                                    .getResources(),
+                            R.drawable.white6));
+                }
             }
         } else {
             //Three of ones

@@ -5,8 +5,9 @@ import java.util.ArrayList;
 /**
  * Created by Zacke on 2016-02-10.
  *
- * Class that represents the current player handling the  name and scores.
- * Should be static so it won't reset stats with phone rotation
+ * Class that represents the current player handling scores and amount of
+ * rounds. Also holds a list with all dices for the game
+ * Should be static final so it won't reset stats with activity being destroyed
  */
 public class Player {
 

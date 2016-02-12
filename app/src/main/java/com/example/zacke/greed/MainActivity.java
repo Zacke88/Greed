@@ -366,12 +366,14 @@ public class MainActivity extends AppCompatActivity {
         // Ones and fives
         if (!sixOfAKind && !straight) {
             if (threeOfOnes) {
-                PLAYER.setThrowScore(PLAYER.getThrowScore() + (100 * (ones - 3)));
+                PLAYER.setThrowScore(PLAYER.getThrowScore() + (100 * (ones -
+                        3)));
             } else {
                 PLAYER.setThrowScore(PLAYER.getThrowScore() + (100 * ones));
             }
             if (threeOfFives) {
-                PLAYER.setThrowScore(PLAYER.getThrowScore() + (50 * (fives - 3)));
+                PLAYER.setThrowScore(PLAYER.getThrowScore() + (50 * (fives -
+                        3)));
             } else {
                 PLAYER.setThrowScore(PLAYER.getThrowScore() + (50 * fives));
             }
@@ -582,7 +584,8 @@ public class MainActivity extends AppCompatActivity {
      * @param dice which dice to select
      */
     public void selectDice(int dice) {
-        if (dice == 1 && PLAYER.getDiceList().get(dice - 1).isDiceSelectable()) {
+        if (dice == 1 && PLAYER.getDiceList().get(dice - 1).isDiceSelectable
+                ()) {
             PLAYER.getDiceList().get(dice - 1).setDiceSelected(true);
             if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 1) {
                 PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
@@ -625,7 +628,8 @@ public class MainActivity extends AppCompatActivity {
                 PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
                         .decodeResource(this.getResources(), R.drawable.red6));
             }
-        } else if (dice == 3 && PLAYER.getDiceList().get(dice - 1).isDiceSelectable()) {
+        } else if (dice == 3 && PLAYER.getDiceList().get(dice - 1)
+                .isDiceSelectable()) {
             PLAYER.getDiceList().get(dice - 1).setDiceSelected(true);
             if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 1) {
                 PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
@@ -646,7 +650,8 @@ public class MainActivity extends AppCompatActivity {
                 PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
                         .decodeResource(this.getResources(), R.drawable.red6));
             }
-        } else if (dice == 4 && PLAYER.getDiceList().get(dice - 1).isDiceSelectable()) {
+        } else if (dice == 4 && PLAYER.getDiceList().get(dice - 1)
+                .isDiceSelectable()) {
             PLAYER.getDiceList().get(dice - 1).setDiceSelected(true);
             if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 1) {
                 PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
@@ -667,7 +672,8 @@ public class MainActivity extends AppCompatActivity {
                 PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
                         .decodeResource(this.getResources(), R.drawable.red6));
             }
-        } else if (dice == 5 && PLAYER.getDiceList().get(dice - 1).isDiceSelectable()) {
+        } else if (dice == 5 && PLAYER.getDiceList().get(dice - 1)
+                .isDiceSelectable()) {
             PLAYER.getDiceList().get(dice - 1).setDiceSelected(true);
             if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 1) {
                 PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
@@ -688,7 +694,8 @@ public class MainActivity extends AppCompatActivity {
                 PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
                         .decodeResource(this.getResources(), R.drawable.red6));
             }
-        } else if (dice == 6 && PLAYER.getDiceList().get(dice - 1).isDiceSelectable()) {
+        } else if (dice == 6 && PLAYER.getDiceList().get(dice - 1)
+                .isDiceSelectable()) {
             PLAYER.getDiceList().get(dice - 1).setDiceSelected(true);
             if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 1) {
                 PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
@@ -727,7 +734,8 @@ public class MainActivity extends AppCompatActivity {
                     "score, Throw again to start new round)", Toast
                     .LENGTH_SHORT);
             if(getResources().getConfiguration().orientation == 1) {
-                toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0,
+                toast.setGravity(Gravity.CENTER_VERTICAL | Gravity
+                                .CENTER_HORIZONTAL, 0,
                         0);
             } else {
                 toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0,
@@ -736,10 +744,12 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
         }
         if(toastString.equals("failFirstRound")) {
-            Toast toast = Toast.makeText(this, "Failed to reach 300 on first throw, " +
+            Toast toast = Toast.makeText(this, "Failed to reach 300 on first " +
+                    "throw, " +
                     "starting new round)", Toast.LENGTH_SHORT);
             if(getResources().getConfiguration().orientation == 1) {
-                toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0,
+                toast.setGravity(Gravity.CENTER_VERTICAL | Gravity
+                                .CENTER_HORIZONTAL, 0,
                         0);
             } else {
                 toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0,
@@ -748,10 +758,12 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
         }
         if(toastString.equals("failRound")) {
-            Toast toast = Toast.makeText(this, "Failed to score on this throw, " +
+            Toast toast = Toast.makeText(this, "Failed to score on this " +
+                    "throw, " +
                     "starting new round)", Toast.LENGTH_SHORT);
             if(getResources().getConfiguration().orientation == 1) {
-                toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0,
+                toast.setGravity(Gravity.CENTER_VERTICAL | Gravity
+                                .CENTER_HORIZONTAL, 0,
                         0);
             } else {
                 toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0,
@@ -802,7 +814,8 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            PLAYER.setRoundScore(PLAYER.getRoundScore() + PLAYER.getThrowScore());
+            PLAYER.setRoundScore(PLAYER.getRoundScore() + PLAYER
+                    .getThrowScore());
             if(PLAYER.getThrowScore() > 0) {
                 showToast("score");
                 newRound();

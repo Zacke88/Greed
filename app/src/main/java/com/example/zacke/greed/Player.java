@@ -12,11 +12,14 @@ import java.util.ArrayList;
 public class Player {
 
     private int roundScore = 0;
-    private int previousRoundScore = 0;
+    private int throwScore = 0;
+    private int maxRoundScore = 0;
     private int totalScore = 0;
     private int rounds = 1;
+    private int winScore = 1000;
     private ArrayList<Dice> diceList = new ArrayList<>();
     private boolean firstRound = true;
+    //private boolean selectedThisRound = false;
 
     public int getRoundScore() {
         return roundScore;
@@ -50,19 +53,45 @@ public class Player {
         this.diceList = diceList;
     }
 
-    public int getPreviousRoundScore() {
-        return previousRoundScore;
-    }
-
-    public void setPreviousRoundScore(int previousRoundScore) {
-        this.previousRoundScore = previousRoundScore;
-    }
-
     public boolean isFirstRound() {
         return firstRound;
     }
 
     public void setFirstRound(boolean firstRound) {
         this.firstRound = firstRound;
+    }
+
+    /*
+    public boolean isSelectedThisRound() {
+        return selectedThisRound;
+    }
+
+    public void setSelectedThisRound(boolean selectedThisRound) {
+        this.selectedThisRound = selectedThisRound;
+    }
+    */
+
+    public int getMaxRoundScore() {
+        return maxRoundScore;
+    }
+
+    public void setMaxRoundScore(int maxRoundScore) {
+        this.maxRoundScore = maxRoundScore;
+    }
+
+    public int getThrowScore() {
+        return throwScore;
+    }
+
+    public void setThrowScore(int throwScore) {
+        this.throwScore = throwScore;
+    }
+
+    public int getWinScore() {
+        return winScore;
+    }
+
+    public void setWinScore(int winScore) {
+        this.winScore = winScore;
     }
 }

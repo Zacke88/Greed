@@ -7,9 +7,9 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.zacke.greed.MainActivity">
+    tools:context="com.example.zacke.greed.MainActivity"><![CDATA[
 
-    <Button
+    Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Score"
@@ -17,7 +17,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"/>
 
-    <Button
+    Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Throw"
@@ -25,7 +25,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
 
-    <TextView
+    TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -34,49 +34,45 @@
         android:layout_alignTop="@+id/scoreButton"
         android:layout_centerHorizontal="true" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/diceBottomCenter"
-        android:layout_above="@+id/dicePos"
-        android:layout_centerHorizontal="true" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/diceBottomRight"
-        android:layout_above="@+id/dicePos"
-        android:layout_toEndOf="@+id/diceBottomCenter" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/diceBottomLeft"
-        android:layout_above="@+id/dicePos"
-        android:layout_toStartOf="@+id/diceBottomCenter" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/diceTopCenter"
-        android:layout_above="@+id/diceBottomCenter"
-        android:layout_centerHorizontal="true" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/diceTopRight"
-        android:layout_above="@+id/diceBottomRight"
-        android:layout_toEndOf="@+id/diceTopCenter" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/diceTopLeft"
-        android:layout_above="@+id/diceBottomLeft"
-        android:layout_toStartOf="@+id/diceTopCenter" />
+
+
+
+
+
+    ]]>
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Congratulations, you succeeded!"
+        android:id="@+id/succeedText"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Try Again"
+        android:id="@+id/tryButton"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="WIn"
+        android:id="@+id/winText"
+        android:layout_below="@+id/succeedText"
+        android:layout_alignParentStart="true"/><![CDATA[
+
+    TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -85,7 +81,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 
-    <TextView
+    TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -94,7 +90,7 @@
         android:layout_below="@+id/roundScorePortrait"
         android:layout_centerHorizontal="true" />
 
-    <TextView
+    TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
@@ -103,7 +99,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true" />
 
-    <TextView
+    TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -112,4 +108,5 @@
         android:layout_below="@+id/roundScorePortrait"
         android:layout_alignParentStart="true" />
 
+]]>
 </RelativeLayout>

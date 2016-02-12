@@ -1,5 +1,7 @@
 package com.example.zacke.greed;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +16,28 @@ import java.util.ArrayList;
 import java.util.Random;
 
 /**
+ * Created by Zacke on 2016-02-09.
+ * <p/>
  * MainActivity for the game Greed, it handles the game rules and logic
+ * <p/>
+ * Greed is played by one player where the goal is to reach a set score
+ * (10000 points) within as few rounds as possible
+ * <p/>
+ * Each round the player throws dices and the chooses which of the dices to
+ * keep, making it counts towards the round score. the player can then choose
+ * to continue the round by throwing unselected dices again or save score
+ * starting a new round
+ * <p/>
+ * The first throw each round the player has to meet a criteria of at least
+ * 300 points whereas the following throws the player has to get score
+ * greater than 0. If theese critera is not met the round score will be set
+ * to 0 and a new round will start.
+ * <p/>
+ * To score the player either has to get a straight (getting dices 1, 2, 3,
+ * 4, 5, 6) giving a score of 1000 or by getting three of a kind which gives
+ * score based on the value of the dice times 100. Also the 1's and 5's which
+ * was not used for either a stright or three of a kind will give score, 100
+ * for each 1 and 50 for each 5.
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -24,8 +47,6 @@ public class MainActivity extends AppCompatActivity {
     private ImageView dice4Image;
     private ImageView dice5Image;
     private ImageView dice6Image;
-
-    private ArrayList<Dice> diceList = new ArrayList<>();
 
     private int ones = 0;
     private int twos = 0;
@@ -65,14 +86,13 @@ public class MainActivity extends AppCompatActivity {
      * accordingly
      */
     public void setDices() {
-        if(PLAYER.getDiceList().isEmpty()) {
-            diceList.add(DICE1);
-            diceList.add(DICE2);
-            diceList.add(DICE3);
-            diceList.add(DICE4);
-            diceList.add(DICE5);
-            diceList.add(DICE6);
-            PLAYER.setDiceList(diceList);
+        if (PLAYER.getDiceList().isEmpty()) {
+            PLAYER.getDiceList().add(DICE1);
+            PLAYER.getDiceList().add(DICE2);
+            PLAYER.getDiceList().add(DICE3);
+            PLAYER.getDiceList().add(DICE4);
+            PLAYER.getDiceList().add(DICE5);
+            PLAYER.getDiceList().add(DICE6);
         }
 
         TextView text = (TextView) findViewById(R.id.dicePos);
@@ -120,22 +140,28 @@ public class MainActivity extends AppCompatActivity {
      * oriented
      */
     public void setScoreText() {
-        TextView roundScorePortrait = (TextView) findViewById(R.id.roundScorePortrait);
+        TextView roundScorePortrait = (TextView) findViewById(R.id
+                .roundScorePortrait);
         roundScorePortrait.setText("");
-        TextView totalScorePortrait = (TextView) findViewById(R.id.totalScorePortrait);
+        TextView totalScorePortrait = (TextView) findViewById(R.id
+                .totalScorePortrait);
         totalScorePortrait.setText("");
-        TextView roundScoreLandscape = (TextView) findViewById(R.id.roundScoreLandscape);
+        TextView roundScoreLandscape = (TextView) findViewById(R.id
+                .roundScoreLandscape);
         roundScoreLandscape.setText("");
-        TextView totalScoreLandscape = (TextView) findViewById(R.id.totalScoreLandscape);
+        TextView totalScoreLandscape = (TextView) findViewById(R.id
+                .totalScoreLandscape);
         totalScoreLandscape.setText("");
 
         if (getResources().getConfiguration().orientation == 1) {
-            roundScorePortrait.setText(String.valueOf(PLAYER.getRoundScore()
-                    + " (+" + (PLAYER.getRoundScore() - PLAYER.getPreviousRoundScore()) + ")"));
+            roundScorePortrait.setText(String.valueOf(PLAYER.getRoundScore())
+                    +" ("+ String.valueOf(PLAYER.getThrowScore())+"/"+String
+                    .valueOf(PLAYER.getMaxRoundScore()+")"));
             totalScorePortrait.setText(String.valueOf(PLAYER.getTotalScore()));
         } else {
-            roundScoreLandscape.setText(String.valueOf(PLAYER.getRoundScore()
-                    + " (+" + (PLAYER.getRoundScore() - PLAYER.getPreviousRoundScore()) + ")"));
+            roundScoreLandscape.setText(String.valueOf(PLAYER.getRoundScore())
+                    +" ("+ String.valueOf(PLAYER.getThrowScore())+"/"+String
+                    .valueOf(PLAYER.getMaxRoundScore()+")"));
             totalScoreLandscape.setText(String.valueOf(PLAYER.getTotalScore()));
         }
     }
@@ -146,42 +172,37 @@ public class MainActivity extends AppCompatActivity {
      * adds and shows a corresponding image for that value
      */
     public void throwDices() {
-        for(Dice dice: PLAYER.getDiceList()) {
-            if(dice.isDiceActive()) {
+        for (Dice dice : PLAYER.getDiceList()) {
+            if (dice.isDiceActive()) {
                 dice.setDiceValue(rand.nextInt(7 - 1) + 1);
             }
-            if(dice.getDiceValue() == 1 && dice.isDiceActive()) {
+            if (dice.getDiceValue() == 1 && dice.isDiceActive()) {
                 dice.setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.grey1));
+                        .getResources(), R.drawable.grey1));
             }
-            if(dice.getDiceValue() == 2 && dice.isDiceActive()) {
+            if (dice.getDiceValue() == 2 && dice.isDiceActive()) {
                 dice.setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.grey2));
+                        .getResources(), R.drawable.grey2));
             }
-            if(dice.getDiceValue() == 3 && dice.isDiceActive()) {
+            if (dice.getDiceValue() == 3 && dice.isDiceActive()) {
                 dice.setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.grey3));
+                        .getResources(), R.drawable.grey3));
             }
-            if(dice.getDiceValue() == 4 && dice.isDiceActive()) {
+            if (dice.getDiceValue() == 4 && dice.isDiceActive()) {
                 dice.setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.grey4));
+                        .getResources(), R.drawable.grey4));
             }
-            if(dice.getDiceValue() == 5 && dice.isDiceActive()) {
+            if (dice.getDiceValue() == 5 && dice.isDiceActive()) {
                 dice.setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.grey5));
+                        .getResources(), R.drawable.grey5));
             }
-            if(dice.getDiceValue() == 6 && dice.isDiceActive()) {
+            if (dice.getDiceValue() == 6 && dice.isDiceActive()) {
                 dice.setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.grey6));
+                        .getResources(), R.drawable.grey6));
             }
         }
         updateDiceImages();
+        PLAYER.setRoundScore(PLAYER.getRoundScore() + PLAYER.getThrowScore());
         calculateScore(true);
     }
 
@@ -195,10 +216,9 @@ public class MainActivity extends AppCompatActivity {
      */
     public void calculateScore(boolean checkCriteria) {
         resetDiceState();
-        PLAYER.setPreviousRoundScore(PLAYER.getRoundScore());
 
         // Calculate score for the thrown dices
-        if(checkCriteria) {
+        if (checkCriteria) {
             for (Dice dice : PLAYER.getDiceList()) {
                 if (dice.getDiceValue() == 1 && dice.isDiceActive()) {
                     ones++;
@@ -223,108 +243,115 @@ public class MainActivity extends AppCompatActivity {
         // Calculate score of dices selected by the player
         else {
             for (Dice dice : PLAYER.getDiceList()) {
-                if (dice.getDiceValue() == 1 && dice.isDiceSelected()) {
+                if (dice.getDiceValue() == 1 && dice.isDiceSelected() && dice
+                        .isDiceActive()) {
                     ones++;
                 }
-                if (dice.getDiceValue() == 2 && dice.isDiceSelected()) {
+                if (dice.getDiceValue() == 2 && dice.isDiceSelected() && dice
+                        .isDiceActive()) {
                     twos++;
                 }
-                if (dice.getDiceValue() == 3 && dice.isDiceSelected()) {
+                if (dice.getDiceValue() == 3 && dice.isDiceSelected() && dice
+                        .isDiceActive()) {
                     threes++;
                 }
-                if (dice.getDiceValue() == 4 && dice.isDiceSelected()) {
+                if (dice.getDiceValue() == 4 && dice.isDiceSelected() && dice
+                        .isDiceActive()) {
                     fours++;
                 }
-                if (dice.getDiceValue() == 5 && dice.isDiceSelected()) {
+                if (dice.getDiceValue() == 5 && dice.isDiceSelected() && dice
+                        .isDiceActive()) {
                     fives++;
                 }
-                if (dice.getDiceValue() == 6 && dice.isDiceSelected()) {
+                if (dice.getDiceValue() == 6 && dice.isDiceSelected() && dice
+                        .isDiceActive()) {
                     sixes++;
                 }
             }
         }
 
         // Straight
-        if(ones == 1 && twos == 1 && threes == 1 && fours == 1 && fives == 1
+        if (ones == 1 && twos == 1 && threes == 1 && fours == 1 && fives == 1
                 && sixes == 1) {
-            PLAYER.setRoundScore(PLAYER.getRoundScore()+1000);
+            PLAYER.setThrowScore(PLAYER.getThrowScore() + 1000);
             straight = true;
         }
         // Threee of a kind
-        if(ones == 6) {
-            PLAYER.setRoundScore(PLAYER.getRoundScore()+(1000*2));
+        if (ones == 6) {
+            PLAYER.setThrowScore(PLAYER.getThrowScore() + (1000 * 2));
             sixOfAKind = true;
-        } else if(ones >= 3) {
-            PLAYER.setRoundScore(PLAYER.getRoundScore()+1000);
+        } else if (ones >= 3) {
+            PLAYER.setThrowScore(PLAYER.getThrowScore() + 1000);
             threeOfOnes = true;
         }
-        if(twos == 6) {
-            PLAYER.setRoundScore(PLAYER.getRoundScore()+(200*2));
+        if (twos == 6) {
+            PLAYER.setThrowScore(PLAYER.getThrowScore() + (200 * 2));
             sixOfAKind = true;
-        } else if(twos >= 3) {
-            PLAYER.setRoundScore(PLAYER.getRoundScore()+200);
+        } else if (twos >= 3) {
+            PLAYER.setThrowScore(PLAYER.getThrowScore() + 200);
         }
-        if(threes == 6) {
-            PLAYER.setRoundScore(PLAYER.getRoundScore()+(300*2));
+        if (threes == 6) {
+            PLAYER.setThrowScore(PLAYER.getThrowScore() + (300 * 2));
             sixOfAKind = true;
-        } else if(threes >= 3) {
-            PLAYER.setRoundScore(PLAYER.getRoundScore()+300);
+        } else if (threes >= 3) {
+            PLAYER.setThrowScore(PLAYER.getThrowScore() + 300);
         }
-        if(fours == 6) {
-            PLAYER.setRoundScore(PLAYER.getRoundScore()+(400*2));
+        if (fours == 6) {
+            PLAYER.setThrowScore(PLAYER.getThrowScore() + (400 * 2));
             sixOfAKind = true;
-        } else if(fours >= 3) {
-            PLAYER.setRoundScore(PLAYER.getRoundScore()+400);
+        } else if (fours >= 3) {
+            PLAYER.setThrowScore(PLAYER.getThrowScore() + 400);
         }
-        if(fives == 6) {
-            PLAYER.setRoundScore(PLAYER.getRoundScore()+(500*2));
+        if (fives == 6) {
+            PLAYER.setThrowScore(PLAYER.getThrowScore() + (500 * 2));
             sixOfAKind = true;
-        } else if(fives >= 3) {
-            PLAYER.setRoundScore(PLAYER.getRoundScore()+500);
+        } else if (fives >= 3) {
+            PLAYER.setThrowScore(PLAYER.getThrowScore() + 500);
             threeOfFives = true;
         }
-        if(sixes == 6) {
-            PLAYER.setRoundScore(PLAYER.getRoundScore() + (600 * 2));
+        if (sixes == 6) {
+            PLAYER.setThrowScore(PLAYER.getThrowScore() + (600 * 2));
             sixOfAKind = true;
-        } else if(sixes >= 3) {
-            PLAYER.setRoundScore(PLAYER.getRoundScore()+600);
+        } else if (sixes >= 3) {
+            PLAYER.setThrowScore(PLAYER.getThrowScore() + 600);
         }
 
         // Ones and fives
-        if(!sixOfAKind && !straight) {
-            if(threeOfOnes) {
-                PLAYER.setRoundScore(PLAYER.getRoundScore()+(100*(ones-3)));
+        if (!sixOfAKind && !straight) {
+            if (threeOfOnes) {
+                PLAYER.setThrowScore(PLAYER.getThrowScore() + (100 * (ones - 3)));
             } else {
-                PLAYER.setRoundScore(PLAYER.getRoundScore()+(100*ones));
+                PLAYER.setThrowScore(PLAYER.getThrowScore() + (100 * ones));
             }
-            if(threeOfFives) {
-                PLAYER.setRoundScore(PLAYER.getRoundScore()+(50*(fives-3)));
+            if (threeOfFives) {
+                PLAYER.setThrowScore(PLAYER.getThrowScore() + (50 * (fives - 3)));
             } else {
-                PLAYER.setRoundScore(PLAYER.getRoundScore()+(50*fives));
+                PLAYER.setThrowScore(PLAYER.getThrowScore() + (50 * fives));
             }
         }
 
-        if(checkCriteria) {
+        if (checkCriteria) {
             setActiveDices();
-            setScoreText();
+            PLAYER.setMaxRoundScore(PLAYER.getThrowScore());
             //Starts a new round if criteria for round score not met
             boolean failedRound = false;
-            if(PLAYER.getRoundScore() < 300 && PLAYER.isFirstRound()) {
+            if (PLAYER.getThrowScore() < 300 && PLAYER.isFirstRound()) {
                 PLAYER.setRoundScore(0);
                 failedRound = true;
                 Toast.makeText(this, "Failed to reach 300 on first throw, " +
                         "starting new round)", Toast.LENGTH_SHORT).show();
-            } else if(PLAYER.getRoundScore() == 0 || PLAYER.getRoundScore() ==
-                    PLAYER.getPreviousRoundScore()) {
+            } else if (PLAYER.getThrowScore() == 0) {
                 PLAYER.setRoundScore(0);
                 failedRound = true;
                 Toast.makeText(this, "Failed to score on this throw, " +
                         "starting new round)", Toast.LENGTH_SHORT).show();
             }
             PLAYER.setFirstRound(false);
-            if(failedRound) {
+            if (failedRound) {
                 newRound();
             }
+            PLAYER.setThrowScore(0);
+            setScoreText();
         } else {
             setScoreText();
         }
@@ -346,6 +373,7 @@ public class MainActivity extends AppCompatActivity {
         threeOfOnes = false;
         threeOfFives = false;
         sixOfAKind = false;
+        PLAYER.setThrowScore(0);
     }
 
     /**
@@ -355,32 +383,27 @@ public class MainActivity extends AppCompatActivity {
     public void setActiveDices() {
         //Straight or six of a kind
         if (straight || sixOfAKind) {
-            for(Dice dice: PLAYER.getDiceList()) {
-                dice.setDiceActive(false);
+            for (Dice dice : PLAYER.getDiceList()) {
+                dice.setDiceSelectable(true);
+                //dice.setDiceActive(false);
                 if (dice.getDiceValue() == 1) {
                     dice.setDiceImage(BitmapFactory.decodeResource(this
-                                    .getResources(),
-                            R.drawable.white1));
+                            .getResources(), R.drawable.white1));
                 } else if (dice.getDiceValue() == 2) {
                     dice.setDiceImage(BitmapFactory.decodeResource(this
-                                    .getResources(),
-                            R.drawable.white2));
+                            .getResources(), R.drawable.white2));
                 } else if (dice.getDiceValue() == 3) {
                     dice.setDiceImage(BitmapFactory.decodeResource(this
-                                    .getResources(),
-                            R.drawable.white3));
+                            .getResources(), R.drawable.white3));
                 } else if (dice.getDiceValue() == 4) {
                     dice.setDiceImage(BitmapFactory.decodeResource(this
-                                    .getResources(),
-                            R.drawable.white4));
+                            .getResources(), R.drawable.white4));
                 } else if (dice.getDiceValue() == 5) {
                     dice.setDiceImage(BitmapFactory.decodeResource(this
-                                    .getResources(),
-                            R.drawable.white5));
+                            .getResources(), R.drawable.white5));
                 } else if (dice.getDiceValue() == 6) {
                     dice.setDiceImage(BitmapFactory.decodeResource(this
-                                    .getResources(),
-                            R.drawable.white6));
+                            .getResources(), R.drawable.white6));
                 }
             }
         } else {
@@ -391,9 +414,9 @@ public class MainActivity extends AppCompatActivity {
                 for (Dice dice : PLAYER.getDiceList()) {
                     if (dice.getDiceValue() == 1 && diceCount < 3) {
                         dice.setDiceImage(BitmapFactory.decodeResource(this
-                                        .getResources(),
-                                R.drawable.white1));
-                        dice.setDiceActive(false);
+                                .getResources(), R.drawable.white1));
+                        dice.setDiceSelectable(true);
+                        //dice.setDiceActive(false);
                         diceCount++;
                     }
                 }
@@ -404,9 +427,9 @@ public class MainActivity extends AppCompatActivity {
                 for (Dice dice : PLAYER.getDiceList()) {
                     if (dice.getDiceValue() == 2 && diceCount < 3) {
                         dice.setDiceImage(BitmapFactory.decodeResource(this
-                                        .getResources(),
-                                R.drawable.white2));
-                        dice.setDiceActive(false);
+                                .getResources(), R.drawable.white2));
+                        dice.setDiceSelectable(true);
+                        //dice.setDiceActive(false);
                         diceCount++;
                     }
                 }
@@ -417,9 +440,9 @@ public class MainActivity extends AppCompatActivity {
                 for (Dice dice : PLAYER.getDiceList()) {
                     if (dice.getDiceValue() == 3 && diceCount < 3) {
                         dice.setDiceImage(BitmapFactory.decodeResource(this
-                                        .getResources(),
-                                R.drawable.white3));
-                        dice.setDiceActive(false);
+                                .getResources(), R.drawable.white3));
+                        dice.setDiceSelectable(true);
+                        //dice.setDiceActive(false);
                         diceCount++;
                     }
                 }
@@ -430,9 +453,9 @@ public class MainActivity extends AppCompatActivity {
                 for (Dice dice : PLAYER.getDiceList()) {
                     if (dice.getDiceValue() == 4 && diceCount < 3) {
                         dice.setDiceImage(BitmapFactory.decodeResource(this
-                                        .getResources(),
-                                R.drawable.white4));
-                        dice.setDiceActive(false);
+                                .getResources(), R.drawable.white4));
+                        dice.setDiceSelectable(true);
+                        //dice.setDiceActive(false);
                         diceCount++;
                     }
                 }
@@ -443,9 +466,9 @@ public class MainActivity extends AppCompatActivity {
                 for (Dice dice : PLAYER.getDiceList()) {
                     if (dice.getDiceValue() == 5 && diceCount < 3) {
                         dice.setDiceImage(BitmapFactory.decodeResource(this
-                                        .getResources(),
-                                R.drawable.white5));
-                        dice.setDiceActive(false);
+                                .getResources(), R.drawable.white5));
+                        dice.setDiceSelectable(true);
+                        //dice.setDiceActive(false);
                         diceCount++;
                     }
                 }
@@ -456,9 +479,9 @@ public class MainActivity extends AppCompatActivity {
                 for (Dice dice : PLAYER.getDiceList()) {
                     if (dice.getDiceValue() == 6 && diceCount < 3) {
                         dice.setDiceImage(BitmapFactory.decodeResource(this
-                                        .getResources(),
-                                R.drawable.white6));
-                        dice.setDiceActive(false);
+                                .getResources(), R.drawable.white6));
+                        dice.setDiceSelectable(true);
+                        //dice.setDiceActive(false);
                         diceCount++;
                     }
                 }
@@ -466,18 +489,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Loose one or fives
-        for(Dice dice: PLAYER.getDiceList()) {
-            if(dice.getDiceValue() == 1 && dice.isDiceActive()) {
+        for (Dice dice : PLAYER.getDiceList()) {
+            if (dice.getDiceValue() == 1 && dice.isDiceActive()) {
                 dice.setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.white1));
-                dice.setDiceActive(false);
+                        .getResources(), R.drawable.white1));
+                dice.setDiceSelectable(true);
+                //dice.setDiceActive(false);
             }
-            if(dice.getDiceValue() == 5 && dice.isDiceActive()) {
+            if (dice.getDiceValue() == 5 && dice.isDiceActive()) {
                 dice.setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.white5));
-                dice.setDiceActive(false);
+                        .getResources(), R.drawable.white5));
+                dice.setDiceSelectable(true);
+                //dice.setDiceActive(false);
             }
         }
         updateDiceImages();
@@ -505,12 +528,12 @@ public class MainActivity extends AppCompatActivity {
         PLAYER.setRounds(PLAYER.getRounds() + 1);
         PLAYER.setTotalScore(PLAYER.getRoundScore() + PLAYER.getTotalScore());
         PLAYER.setRoundScore(0);
-        PLAYER.setPreviousRoundScore(0);
         setScoreText();
         PLAYER.setFirstRound(true);
-        for(Dice dice: PLAYER.getDiceList()) {
+        for (Dice dice : PLAYER.getDiceList()) {
             dice.setDiceActive(true);
             dice.setDiceSelected(false);
+            dice.setDiceSelectable(false);
         }
     }
 
@@ -521,167 +544,132 @@ public class MainActivity extends AppCompatActivity {
      * @param dice which dice to select
      */
     public void selectDice(int dice) {
-        if(dice == 1 && !diceList.get(dice-1).isDiceActive()) {
-            diceList.get(dice-1).setDiceSelected(true);
-            if (diceList.get(dice-1).getDiceValue() == 1) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red1));
-            } else if (diceList.get(dice-1).getDiceValue() == 2) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red2));
-            } else if (diceList.get(dice-1).getDiceValue() == 3) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red3));
-            } else if (diceList.get(dice-1).getDiceValue() == 4) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red4));
-            } else if (diceList.get(dice-1).getDiceValue() == 5) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red5));
-            } else if (diceList.get(dice-1).getDiceValue() == 6) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red6));
+        if (dice == 1 && PLAYER.getDiceList().get(dice - 1).isDiceSelectable()) {
+            PLAYER.getDiceList().get(dice - 1).setDiceSelected(true);
+            if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 1) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red1));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 2) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red2));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 3) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red3));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 4) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red4));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 5) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red5));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 6) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red6));
             }
-        } else if(dice == 2 && !diceList.get(dice-1).isDiceActive()) {
-            diceList.get(dice-1).setDiceSelected(true);
-            if (diceList.get(dice-1).getDiceValue() == 1) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red1));
-            } else if (diceList.get(dice-1).getDiceValue() == 2) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red2));
-            } else if (diceList.get(dice-1).getDiceValue() == 3) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red3));
-            } else if (diceList.get(dice-1).getDiceValue() == 4) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red4));
-            } else if (diceList.get(dice-1).getDiceValue() == 5) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red5));
-            } else if (diceList.get(dice-1).getDiceValue() == 6) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red6));
+        } else if (dice == 2 && PLAYER.getDiceList().get(dice - 1)
+                .isDiceSelectable()) {
+            PLAYER.getDiceList().get(dice - 1).setDiceSelected(true);
+            if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 1) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red1));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 2) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red2));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 3) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red3));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 4) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red4));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 5) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red5));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 6) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red6));
             }
-        } else if(dice == 3 && !diceList.get(dice-1).isDiceActive()) {
-            diceList.get(dice-1).setDiceSelected(true);
-            if (diceList.get(dice-1).getDiceValue() == 1) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red1));
-            } else if (diceList.get(dice-1).getDiceValue() == 2) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red2));
-            } else if (diceList.get(dice-1).getDiceValue() == 3) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red3));
-            } else if (diceList.get(dice-1).getDiceValue() == 4) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red4));
-            } else if (diceList.get(dice-1).getDiceValue() == 5) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red5));
-            } else if (diceList.get(dice-1).getDiceValue() == 6) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red6));
+        } else if (dice == 3 && PLAYER.getDiceList().get(dice - 1).isDiceSelectable()) {
+            PLAYER.getDiceList().get(dice - 1).setDiceSelected(true);
+            if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 1) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red1));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 2) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red2));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 3) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red3));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 4) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red4));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 5) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red5));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 6) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red6));
             }
-        } else if(dice == 4 && !diceList.get(dice-1).isDiceActive()) {
-            diceList.get(dice-1).setDiceSelected(true);
-            if (diceList.get(dice-1).getDiceValue() == 1) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red1));
-            } else if (diceList.get(dice-1).getDiceValue() == 2) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red2));
-            } else if (diceList.get(dice-1).getDiceValue() == 3) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red3));
-            } else if (diceList.get(dice-1).getDiceValue() == 4) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red4));
-            } else if (diceList.get(dice-1).getDiceValue() == 5) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red5));
-            } else if (diceList.get(dice-1).getDiceValue() == 6) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red6));
+        } else if (dice == 4 && PLAYER.getDiceList().get(dice - 1).isDiceSelectable()) {
+            PLAYER.getDiceList().get(dice - 1).setDiceSelected(true);
+            if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 1) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red1));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 2) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red2));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 3) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red3));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 4) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red4));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 5) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red5));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 6) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red6));
             }
-        } else if(dice == 5 && !diceList.get(dice-1).isDiceActive()) {
-            diceList.get(dice-1).setDiceSelected(true);
-            if (diceList.get(dice-1).getDiceValue() == 1) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red1));
-            } else if (diceList.get(dice-1).getDiceValue() == 2) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red2));
-            } else if (diceList.get(dice-1).getDiceValue() == 3) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red3));
-            } else if (diceList.get(dice-1).getDiceValue() == 4) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red4));
-            } else if (diceList.get(dice-1).getDiceValue() == 5) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red5));
-            } else if (diceList.get(dice-1).getDiceValue() == 6) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red6));
+        } else if (dice == 5 && PLAYER.getDiceList().get(dice - 1).isDiceSelectable()) {
+            PLAYER.getDiceList().get(dice - 1).setDiceSelected(true);
+            if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 1) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red1));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 2) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red2));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 3) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red3));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 4) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red4));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 5) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red5));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 6) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red6));
             }
-        } else if(dice == 6 && !diceList.get(dice-1).isDiceActive()) {
-            diceList.get(dice-1).setDiceSelected(true);
-            if (diceList.get(dice-1).getDiceValue() == 1) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red1));
-            } else if (diceList.get(dice-1).getDiceValue() == 2) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red2));
-            } else if (diceList.get(dice-1).getDiceValue() == 3) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red3));
-            } else if (diceList.get(dice-1).getDiceValue() == 4) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red4));
-            } else if (diceList.get(dice-1).getDiceValue() == 5) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red5));
-            } else if (diceList.get(dice-1).getDiceValue() == 6) {
-                diceList.get(dice-1).setDiceImage(BitmapFactory.decodeResource(this
-                                .getResources(),
-                        R.drawable.red6));
+        } else if (dice == 6 && PLAYER.getDiceList().get(dice - 1).isDiceSelectable()) {
+            PLAYER.getDiceList().get(dice - 1).setDiceSelected(true);
+            if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 1) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red1));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 2) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red2));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 3) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red3));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 4) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red4));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 5) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red5));
+            } else if (PLAYER.getDiceList().get(dice - 1).getDiceValue() == 6) {
+                PLAYER.getDiceList().get(dice - 1).setDiceImage(BitmapFactory
+                        .decodeResource(this.getResources(), R.drawable.red6));
             }
         }
         updateDiceImages();
@@ -696,9 +684,24 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            for(Dice dice: PLAYER.getDiceList()) {
-                if(!dice.isDiceSelected()) {
+            int diceScored = 0;
+            for (Dice dice : PLAYER.getDiceList()) {
+                if (!dice.isDiceSelected()) {
                     dice.setDiceActive(true);
+                }
+                if (dice.isDiceSelected()) {
+                    diceScored++;
+                    dice.setDiceActive(false);
+                }
+                    dice.setDiceSelectable(false);
+            }
+            // Resets the dices if all dices are selected to give points
+            if(diceScored >= 6) {
+                PLAYER.setFirstRound(true);
+                for (Dice dice : PLAYER.getDiceList()) {
+                    dice.setDiceActive(true);
+                    dice.setDiceSelected(false);
+                    dice.setDiceSelectable(false);
                 }
             }
             throwDices();
@@ -713,7 +716,24 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            newRound();
+            PLAYER.setRoundScore(PLAYER.getRoundScore() + PLAYER.getThrowScore());
+            if(PLAYER.getThrowScore() > 0) {
+                Toast.makeText(MainActivity.this, "Round score added " +
+                        "to total " +
+                        "score, Throw again to start new round)", Toast
+                        .LENGTH_SHORT)
+                        .show();
+                newRound();
+                PLAYER.setThrowScore(0);
+            }
+            if(PLAYER.getTotalScore() >= PLAYER.getWinScore()) {
+                Intent intent = new Intent(MainActivity.this, WinActivity
+                        .class);
+                intent.putExtra("score", String.valueOf(PLAYER.getTotalScore
+                        ()));
+                intent.putExtra("rounds", String.valueOf(PLAYER.getRounds()));
+                startActivity(intent);
+            }
         }
     }
 

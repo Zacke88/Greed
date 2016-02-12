@@ -14,6 +14,7 @@ public class Dice {
     private int diceValue;
     private boolean diceActive = true;
     private boolean diceSelected = false;
+    private boolean diceSelectable = false;
     private Bitmap diceImage;
 
     public int getDiceValue() {
@@ -46,5 +47,13 @@ public class Dice {
 
     public void setDiceSelected(boolean diceSelected) {
         this.diceSelected = diceSelected;
+    }
+
+    public boolean isDiceSelectable() {
+        return diceSelectable;
+    }
+
+    public void setDiceSelectable(boolean diceSelectable) {
+        this.diceSelectable = diceSelectable;
     }
 }

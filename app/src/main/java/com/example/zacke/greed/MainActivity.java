@@ -7,10 +7,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
- *
+ * MainActivity for the game Greed, it handles the game rules and logic
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -21,28 +23,19 @@ public class MainActivity extends AppCompatActivity {
     private ImageView dice5Image;
     private ImageView dice6Image;
 
+    private ArrayList<Dice> diceList = new ArrayList<>();
+
     private int ones = 0;
     private int twos = 0;
     private int threes = 0;
     private int fours = 0;
     private int fives = 0;
     private int sixes = 0;
-    private int diceCount = 0;
-    private int previousRoundScore = 0;
 
     private boolean straight = false;
     private boolean threeOfOnes = false;
     private boolean threeOfFives = false;
     private boolean sixOfAKind = false;
-    private boolean roundOne = true;
-
-    private Button throwButton;
-    private Button scoreButton;
-
-    private TextView roundScorePortrait;
-    private TextView totalScorePortrait;
-    private TextView roundScoreLandscape;
-    private TextView totalScoreLandscape;
 
     private Random rand = new Random();
 
@@ -62,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         setDices();
         setButtons();
         setScoreText();
+        updateDiceImages();
     }
 
     /**
@@ -70,12 +64,13 @@ public class MainActivity extends AppCompatActivity {
      */
     public void setDices() {
         if(PLAYER.getDiceList().isEmpty()) {
-            PLAYER.getDiceList().add(DICE1);
-            PLAYER.getDiceList().add(DICE2);
-            PLAYER.getDiceList().add(DICE3);
-            PLAYER.getDiceList().add(DICE4);
-            PLAYER.getDiceList().add(DICE5);
-            PLAYER.getDiceList().add(DICE6);
+            diceList.add(DICE1);
+            diceList.add(DICE2);
+            diceList.add(DICE3);
+            diceList.add(DICE4);
+            diceList.add(DICE5);
+            diceList.add(DICE6);
+            PLAYER.setDiceList(diceList);
         }
 
         TextView text = (TextView) findViewById(R.id.dicePos);
@@ -102,9 +97,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void setButtons() {
-        scoreButton = (Button) findViewById(R.id.scoreButton);
+        Button scoreButton = (Button) findViewById(R.id.scoreButton);
         scoreButton.setOnClickListener(new ScoreListener());
-        throwButton = (Button) findViewById(R.id.throwButton);
+        Button throwButton = (Button) findViewById(R.id.throwButton);
         throwButton.setOnClickListener(new ThrowListener());
     }
 
@@ -113,22 +108,22 @@ public class MainActivity extends AppCompatActivity {
      * oriented
      */
     public void setScoreText() {
-        roundScorePortrait = (TextView) findViewById(R.id.roundScorePortrait);
+        TextView roundScorePortrait = (TextView) findViewById(R.id.roundScorePortrait);
         roundScorePortrait.setText("");
-        totalScorePortrait = (TextView) findViewById(R.id.totalScorePortrait);
+        TextView totalScorePortrait = (TextView) findViewById(R.id.totalScorePortrait);
         totalScorePortrait.setText("");
-        roundScoreLandscape = (TextView) findViewById(R.id.roundScoreLandscape);
+        TextView roundScoreLandscape = (TextView) findViewById(R.id.roundScoreLandscape);
         roundScoreLandscape.setText("");
-        totalScoreLandscape = (TextView) findViewById(R.id.totalScoreLandscape);
+        TextView totalScoreLandscape = (TextView) findViewById(R.id.totalScoreLandscape);
         totalScoreLandscape.setText("");
 
         if(getResources().getConfiguration().orientation == 1) {
             roundScorePortrait.setText(String.valueOf(PLAYER.getRoundScore()
-                    +" (+"+(PLAYER.getRoundScore()-previousRoundScore)+")"));
+                    + " (+" + (PLAYER.getRoundScore() - PLAYER.getPreviousRoundScore()) + ")"));
             totalScorePortrait.setText(String.valueOf(PLAYER.getTotalScore()));
         } else {
             roundScoreLandscape.setText(String.valueOf(PLAYER.getRoundScore()
-                    +" (+"+(PLAYER.getRoundScore()-previousRoundScore)+")"));
+                    + " (+" + (PLAYER.getRoundScore() - PLAYER.getPreviousRoundScore()) + ")"));
             totalScoreLandscape.setText(String.valueOf(PLAYER.getTotalScore()));
         }
     }
@@ -183,9 +178,8 @@ public class MainActivity extends AppCompatActivity {
      * Calculates the score a user gets on one throw for the active dices
      */
     public void calculateScore() {
-
         resetDiceState();
-        previousRoundScore = PLAYER.getRoundScore();
+        PLAYER.setPreviousRoundScore(PLAYER.getRoundScore());
 
         for(Dice dice: PLAYER.getDiceList()) {
             if(dice.getDiceValue() == 1 && dice.isDiceActive()) {
@@ -272,15 +266,19 @@ public class MainActivity extends AppCompatActivity {
         setActiveDices();
 
         //Starts a new round if criteria for round score not met
-        if(PLAYER.getRoundScore() < 300 && roundOne) {
+        boolean failedRound = false;
+        if(PLAYER.getRoundScore() < 300 && PLAYER.isFirstRound()) {
             PLAYER.setRoundScore(0);
-            newRound();
+            failedRound = true;
         } else if(PLAYER.getRoundScore() == 0 || PLAYER.getRoundScore() ==
-                previousRoundScore) {
+                PLAYER.getPreviousRoundScore()) {
             PLAYER.setRoundScore(0);
+            failedRound = true;
+        }
+        PLAYER.setFirstRound(false);
+        if(failedRound) {
             newRound();
         }
-        roundOne = false;
     }
 
     /**
@@ -312,6 +310,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             //Three of ones
+            int diceCount;
             if (ones >= 3) {
                 diceCount = 0;
                 for (Dice dice : PLAYER.getDiceList()) {
@@ -427,15 +426,21 @@ public class MainActivity extends AppCompatActivity {
      * total rounds played
      */
     public void newRound() {
-        PLAYER.setRounds(PLAYER.getRounds()+1);
-        PLAYER.setTotalScore(PLAYER.getRoundScore()+PLAYER.getTotalScore());
+        PLAYER.setRounds(PLAYER.getRounds() + 1);
+        PLAYER.setTotalScore(PLAYER.getRoundScore() + PLAYER.getTotalScore());
         PLAYER.setRoundScore(0);
-        roundOne = true;
+        PLAYER.setPreviousRoundScore(0);
+        setScoreText();
+        PLAYER.setFirstRound(true);
         for(Dice dice: PLAYER.getDiceList()) {
             dice.setDiceActive(true);
         }
     }
 
+    /**
+     * Listener for the throw Button which calls a method to throw all
+     * active dices
+     */
     public class ThrowListener implements View.OnClickListener {
 
         @Override
@@ -444,6 +449,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Listener for the Score button which calls methods to save the players
+     * current round score then start a new round
+     */
     public class ScoreListener implements View.OnClickListener {
 
         @Override

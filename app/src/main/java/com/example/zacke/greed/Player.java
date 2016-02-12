@@ -11,9 +11,11 @@ import java.util.ArrayList;
 public class Player {
 
     private int roundScore = 0;
+    private int previousRoundScore = 0;
     private int totalScore = 0;
     private int rounds = 1;
     private ArrayList<Dice> diceList = new ArrayList<>();
+    private boolean firstRound = true;
 
     public int getRoundScore() {
         return roundScore;
@@ -45,5 +47,21 @@ public class Player {
 
     public void setDiceList(ArrayList<Dice> diceList) {
         this.diceList = diceList;
+    }
+
+    public int getPreviousRoundScore() {
+        return previousRoundScore;
+    }
+
+    public void setPreviousRoundScore(int previousRoundScore) {
+        this.previousRoundScore = previousRoundScore;
+    }
+
+    public boolean isFirstRound() {
+        return firstRound;
+    }
+
+    public void setFirstRound(boolean firstRound) {
+        this.firstRound = firstRound;
     }
 }

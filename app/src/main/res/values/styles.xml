@@ -17,7 +17,6 @@
 
     <style name="GreedActionBar" parent="Widget.AppCompat.ActionBar">
         <item name="android:textColor">@color/colorText</item>
-
     </style>
 
 </resources>

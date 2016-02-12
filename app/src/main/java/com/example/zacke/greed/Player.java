@@ -16,7 +16,7 @@ public class Player {
     private int maxRoundScore = 0;
     private int totalScore = 0;
     private int rounds = 1;
-    private int winScore = 1000;
+    private int winScore = 100;
     private ArrayList<Dice> diceList = new ArrayList<>();
     private boolean firstRound = true;
     //private boolean selectedThisRound = false;

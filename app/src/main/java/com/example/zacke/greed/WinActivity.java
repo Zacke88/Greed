@@ -2,9 +2,11 @@ package com.example.zacke.greed;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -20,22 +22,34 @@ public class WinActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_win);
 
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("  Greed");
+            actionBar.setLogo(R.drawable.coin);
+            actionBar.setDisplayUseLogoEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
+
         setWinText();
         setButtons();
     }
 
     /**
-     * Sets the player victory text
+     * Sets the player victory text which it gets as data from the
+     * MainActivity class when starting this intent
      */
     public void setWinText() {
         TextView winText = (TextView) findViewById(R.id
                 .winText);
-        winText.setText("You got "+String.valueOf(getIntent().getStringExtra
+        winText.setText("You got "+String.valueOf(getIntent()
+                .getStringExtra
                 ("score"))
                 +" " +
-                "points after " +
-                ""+String.valueOf(getIntent().getStringExtra
+                "points after "+String.valueOf(getIntent()
+                .getStringExtra
                 ("rounds"))+" rounds.");
+        ImageView winImage = (ImageView) findViewById(R.id.winImage);
+        winImage.setImageResource(R.drawable.good);
     }
 
     /**
@@ -47,13 +61,16 @@ public class WinActivity extends AppCompatActivity {
     }
 
     /**
-     * Listener for the dice image to make it selected
+     * Listener for the "Try again" button which resets the current
+     * application and starts a new MainActivity
      */
     public class TryListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(WinActivity.this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            System.exit(0);
             startActivity(intent);
         }
     }

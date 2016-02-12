@@ -1,18 +1,16 @@
 package com.example.zacke.greed;
 
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -75,6 +73,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setTitle("  Greed");
+            actionBar.setLogo(R.drawable.coin);
+            actionBar.setDisplayUseLogoEnabled(true);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
+
         setDices();
         setButtons();
         setScoreText();
@@ -116,6 +122,40 @@ public class MainActivity extends AppCompatActivity {
         dice6Image = (ImageView) findViewById(R.id.diceBottomRight);
         dice6Image.setScaleX((float) 0.7);
         dice6Image.setScaleY((float) 0.7);
+    }
+
+    /**
+     * Makes all dices grey to show the player that the round is over and the
+     * player has to throw again
+     */
+    public void makeDicesInactive() {
+        for (Dice dice : PLAYER.getDiceList()) {
+            if (dice.getDiceValue() == 1) {
+                dice.setDiceImage(BitmapFactory.decodeResource(this
+                        .getResources(), R.drawable.grey1));
+            }
+            if (dice.getDiceValue() == 2) {
+                dice.setDiceImage(BitmapFactory.decodeResource(this
+                        .getResources(), R.drawable.grey2));
+            }
+            if (dice.getDiceValue() == 3) {
+                dice.setDiceImage(BitmapFactory.decodeResource(this
+                        .getResources(), R.drawable.grey3));
+            }
+            if (dice.getDiceValue() == 4) {
+                dice.setDiceImage(BitmapFactory.decodeResource(this
+                        .getResources(), R.drawable.grey4));
+            }
+            if (dice.getDiceValue() == 5) {
+                dice.setDiceImage(BitmapFactory.decodeResource(this
+                        .getResources(), R.drawable.grey5));
+            }
+            if (dice.getDiceValue() == 6) {
+                dice.setDiceImage(BitmapFactory.decodeResource(this
+                        .getResources(), R.drawable.grey6));
+            }
+        }
+        updateDiceImages();
     }
 
     /**
@@ -338,13 +378,11 @@ public class MainActivity extends AppCompatActivity {
             if (PLAYER.getThrowScore() < 300 && PLAYER.isFirstRound()) {
                 PLAYER.setRoundScore(0);
                 failedRound = true;
-                Toast.makeText(this, "Failed to reach 300 on first throw, " +
-                        "starting new round)", Toast.LENGTH_SHORT).show();
+                showToast("failFirstRound");
             } else if (PLAYER.getThrowScore() == 0) {
                 PLAYER.setRoundScore(0);
                 failedRound = true;
-                Toast.makeText(this, "Failed to score on this throw, " +
-                        "starting new round)", Toast.LENGTH_SHORT).show();
+                showToast("failRound");
             }
             PLAYER.setFirstRound(false);
             if (failedRound) {
@@ -416,7 +454,6 @@ public class MainActivity extends AppCompatActivity {
                         dice.setDiceImage(BitmapFactory.decodeResource(this
                                 .getResources(), R.drawable.white1));
                         dice.setDiceSelectable(true);
-                        //dice.setDiceActive(false);
                         diceCount++;
                     }
                 }
@@ -429,7 +466,6 @@ public class MainActivity extends AppCompatActivity {
                         dice.setDiceImage(BitmapFactory.decodeResource(this
                                 .getResources(), R.drawable.white2));
                         dice.setDiceSelectable(true);
-                        //dice.setDiceActive(false);
                         diceCount++;
                     }
                 }
@@ -442,7 +478,6 @@ public class MainActivity extends AppCompatActivity {
                         dice.setDiceImage(BitmapFactory.decodeResource(this
                                 .getResources(), R.drawable.white3));
                         dice.setDiceSelectable(true);
-                        //dice.setDiceActive(false);
                         diceCount++;
                     }
                 }
@@ -455,7 +490,6 @@ public class MainActivity extends AppCompatActivity {
                         dice.setDiceImage(BitmapFactory.decodeResource(this
                                 .getResources(), R.drawable.white4));
                         dice.setDiceSelectable(true);
-                        //dice.setDiceActive(false);
                         diceCount++;
                     }
                 }
@@ -468,7 +502,6 @@ public class MainActivity extends AppCompatActivity {
                         dice.setDiceImage(BitmapFactory.decodeResource(this
                                 .getResources(), R.drawable.white5));
                         dice.setDiceSelectable(true);
-                        //dice.setDiceActive(false);
                         diceCount++;
                     }
                 }
@@ -481,7 +514,6 @@ public class MainActivity extends AppCompatActivity {
                         dice.setDiceImage(BitmapFactory.decodeResource(this
                                 .getResources(), R.drawable.white6));
                         dice.setDiceSelectable(true);
-                        //dice.setDiceActive(false);
                         diceCount++;
                     }
                 }
@@ -494,13 +526,11 @@ public class MainActivity extends AppCompatActivity {
                 dice.setDiceImage(BitmapFactory.decodeResource(this
                         .getResources(), R.drawable.white1));
                 dice.setDiceSelectable(true);
-                //dice.setDiceActive(false);
             }
             if (dice.getDiceValue() == 5 && dice.isDiceActive()) {
                 dice.setDiceImage(BitmapFactory.decodeResource(this
                         .getResources(), R.drawable.white5));
                 dice.setDiceSelectable(true);
-                //dice.setDiceActive(false);
             }
         }
         updateDiceImages();
@@ -535,6 +565,7 @@ public class MainActivity extends AppCompatActivity {
             dice.setDiceSelected(false);
             dice.setDiceSelectable(false);
         }
+        makeDicesInactive();
     }
 
     /**
@@ -676,6 +707,54 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Shows a toast for the player which is placed depending on how the
+     * screen is oriented
+     *
+     * @param toastString which toast text to show
+     */
+    public void showToast(String toastString) {
+        if(toastString.equals("score")) {
+            Toast toast = Toast.makeText(MainActivity.this, "Round score " +
+                    "added " +
+                    "to total " +
+                    "score, Throw again to start new round)", Toast
+                    .LENGTH_SHORT);
+            if(getResources().getConfiguration().orientation == 1) {
+                toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0,
+                        0);
+            } else {
+                toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0,
+                        0);
+            }
+            toast.show();
+        }
+        if(toastString.equals("failFirstRound")) {
+            Toast toast = Toast.makeText(this, "Failed to reach 300 on first throw, " +
+                    "starting new round)", Toast.LENGTH_SHORT);
+            if(getResources().getConfiguration().orientation == 1) {
+                toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0,
+                        0);
+            } else {
+                toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0,
+                        0);
+            }
+            toast.show();
+        }
+        if(toastString.equals("failRound")) {
+            Toast toast = Toast.makeText(this, "Failed to score on this throw, " +
+                    "starting new round)", Toast.LENGTH_SHORT);
+            if(getResources().getConfiguration().orientation == 1) {
+                toast.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL, 0,
+                        0);
+            } else {
+                toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0,
+                        0);
+            }
+            toast.show();
+        }
+    }
+
+    /**
      * Listener for the throw Button which calls a method to throw all
      * active dices. Also makes all unselected dices active, meaning they
      * will be thrown again
@@ -718,11 +797,7 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View v) {
             PLAYER.setRoundScore(PLAYER.getRoundScore() + PLAYER.getThrowScore());
             if(PLAYER.getThrowScore() > 0) {
-                Toast.makeText(MainActivity.this, "Round score added " +
-                        "to total " +
-                        "score, Throw again to start new round)", Toast
-                        .LENGTH_SHORT)
-                        .show();
+                showToast("score");
                 newRound();
                 PLAYER.setThrowScore(0);
             }

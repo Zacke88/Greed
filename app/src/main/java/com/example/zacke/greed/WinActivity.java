@@ -17,6 +17,13 @@ import android.widget.TextView;
  */
 public class WinActivity extends AppCompatActivity {
 
+    /**
+     * This method is run together with the activity which should be when the
+     * game is won and is used to update the action bar, text and buttons to
+     * display a victory screen for the player
+     *
+     * @param savedInstanceState The last saved instance state
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

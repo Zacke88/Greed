@@ -7,9 +7,9 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.zacke.greed.MainActivity"><![CDATA[
+    tools:context="com.example.zacke.greed.MainActivity">
 
-    Button
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Score"
@@ -17,7 +17,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true"/>
 
-    Button
+    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Throw"
@@ -25,7 +25,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
 
-    TextView
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -33,18 +33,6 @@
         android:id="@+id/dicePos"
         android:layout_alignTop="@+id/scoreButton"
         android:layout_centerHorizontal="true" />
-
-
-
-
-
-
-
-
-
-
-
-    ]]>
 
     <TextView
         android:layout_width="wrap_content"

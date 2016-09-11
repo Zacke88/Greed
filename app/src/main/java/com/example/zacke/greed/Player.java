@@ -1,13 +1,15 @@
 package com.example.zacke.greed;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by Zacke on 2016-02-10.
- *
  * Class that represents the current player handling scores and amount of
  * rounds. Also holds a list with all dices for the game
  * Should be static final so it won't reset stats with activity being destroyed
+ *
+ * @author Joakim Zakrisson
+ * @version 2016-02-10
  */
 public class Player {
 
@@ -17,7 +19,7 @@ public class Player {
     private int totalScore = 0;
     private int rounds = 1;
     private int winScore = 10000;
-    private ArrayList<Die> dieList = new ArrayList<>();
+    private List<Die> dieList = new ArrayList<>();
     private boolean firstRound = true;
 
     /**
@@ -72,7 +74,7 @@ public class Player {
      *
      * @return A list with all the dice which is currently used with this player
      */
-    public ArrayList<Die> getDieList() {
+    public List<Die> getDieList() {
         return dieList;
     }
 

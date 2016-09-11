@@ -1,11 +1,11 @@
 package com.example.zacke.greed;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -13,31 +13,34 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
- * Created by Zacke on 2016-02-09.
- *
  * MainActivity for the game Greed, it handles the game rules and logic
- *
+ * <p/>
  * Greed is played by one player where the goal is to reach a set score
  * (10000 points) within as few rounds as possible
- *
+ * <p/>
  * Each round the player throws dices and the chooses which of the dices to
  * keep, making it counts towards the round score. the player can then choose
  * to continue the round by throwing unselected dices again or save score
  * starting a new round
- *
+ * <p/>
  * The first throw each round the player has to meet a criteria of at least
  * 300 points whereas the following throws the player has to get score
  * greater than 0. If theese critera is not met the round score will be set
  * to 0 and a new round will start.
- *
+ * <p/>
  * To score the player either has to get a straight (getting dices 1, 2, 3,
  * 4, 5, 6) giving a score of 1000 or by getting three of a kind which gives
  * score based on the value of the dice times 100. Also the 1's and 5's which
  * was not used for either a stright or three of a kind will give score, 100
  * for each 1 and 50 for each 5.
+ *
+ * @author Joakim Zakrisson
+ * @version 2016-02-09
  */
 public class MainActivity extends AppCompatActivity {
 
@@ -70,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
     static final Die DIE_5 = new Die();
     static final Die DIE_6 = new Die();
 
+    private List<ImageView> diceImages = new ArrayList<>();
+    private List<Die> dice = new ArrayList<>();
+
     /**
      * This method is run when this class is created which is when the
      * application is starting. Updates the action bar and sets the dice,
@@ -89,11 +95,46 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setDisplayUseLogoEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
         }
+        Log.e("die", String.valueOf(R.drawable.grey1));
+        Log.e("die", String.valueOf(R.drawable.grey2));
+        Log.e("die", String.valueOf(R.drawable.grey3));
+        Log.e("die", String.valueOf(R.drawable.grey4));
+        Log.e("die", String.valueOf(R.drawable.grey5));
+        Log.e("die", String.valueOf(R.drawable.grey6));
 
+        initiateLists();
         setDices();
         setButtons();
         setScoreText();
         updateDiceImages();
+    }
+
+    /**
+     * Creates lists which hold all dice and corresponding image views
+     */
+    public void initiateLists() {
+        if (diceImages.isEmpty()) {
+            die1Image = (ImageView) findViewById(R.id.diceTopLeft);
+            die2Image = (ImageView) findViewById(R.id.diceTopCenter);
+            die3Image = (ImageView) findViewById(R.id.diceTopRight);
+            die4Image = (ImageView) findViewById(R.id.diceBottomLeft);
+            die5Image = (ImageView) findViewById(R.id.diceBottomCenter);
+            die6Image = (ImageView) findViewById(R.id.diceBottomRight);
+            diceImages.add(die1Image);
+            diceImages.add(die2Image);
+            diceImages.add(die3Image);
+            diceImages.add(die4Image);
+            diceImages.add(die5Image);
+            diceImages.add(die6Image);
+        }
+        if (dice.isEmpty()) {
+            dice.add(DIE_1);
+            dice.add(DIE_2);
+            dice.add(DIE_3);
+            dice.add(DIE_4);
+            dice.add(DIE_5);
+            dice.add(DIE_6);
+        }
     }
 
     /**
@@ -102,70 +143,128 @@ public class MainActivity extends AppCompatActivity {
      */
     public void setDices() {
         if (PLAYER.getDieList().isEmpty()) {
-            PLAYER.getDieList().add(DIE_1);
-            PLAYER.getDieList().add(DIE_2);
-            PLAYER.getDieList().add(DIE_3);
-            PLAYER.getDieList().add(DIE_4);
-            PLAYER.getDieList().add(DIE_5);
-            PLAYER.getDieList().add(DIE_6);
+            PLAYER.getDieList().addAll(dice);
         }
 
         TextView text = (TextView) findViewById(R.id.dicePos);
         text.setText("");
 
-        die1Image = (ImageView) findViewById(R.id.diceTopLeft);
-        die1Image.setScaleX((float) 0.7);
-        die1Image.setScaleY((float) 0.7);
-        die2Image = (ImageView) findViewById(R.id.diceTopCenter);
-        die2Image.setScaleX((float) 0.7);
-        die2Image.setScaleY((float) 0.7);
-        die3Image = (ImageView) findViewById(R.id.diceTopRight);
-        die3Image.setScaleX((float) 0.7);
-        die3Image.setScaleY((float) 0.7);
-        die4Image = (ImageView) findViewById(R.id.diceBottomLeft);
-        die4Image.setScaleX((float) 0.7);
-        die4Image.setScaleY((float) 0.7);
-        die5Image = (ImageView) findViewById(R.id.diceBottomCenter);
-        die5Image.setScaleX((float) 0.7);
-        die5Image.setScaleY((float) 0.7);
-        die6Image = (ImageView) findViewById(R.id.diceBottomRight);
-
-        die6Image.setScaleX((float) 0.7);
-        die6Image.setScaleY((float) 0.7);
+        //Scale all dice images
+        for (ImageView imageView : diceImages) {
+            Log.e("loop", "LOOPEN");
+            imageView.setScaleX((float) 0.7);
+            imageView.setScaleY((float) 0.7);
+        }
     }
 
     /**
      * Makes all dices grey to show the player that the round is over and the
      * player has to throw again
      */
-    public void makeDicesInactive() {
+    public void makeDiceInactive() {
         for (Die die : PLAYER.getDieList()) {
-            if (die.getValue() == 1) {
-                die.setImage(BitmapFactory.decodeResource(this
-                        .getResources(), R.drawable.grey1));
-            }
-            if (die.getValue() == 2) {
-                die.setImage(BitmapFactory.decodeResource(this
-                        .getResources(), R.drawable.grey2));
-            }
-            if (die.getValue() == 3) {
-                die.setImage(BitmapFactory.decodeResource(this
-                        .getResources(), R.drawable.grey3));
-            }
-            if (die.getValue() == 4) {
-                die.setImage(BitmapFactory.decodeResource(this
-                        .getResources(), R.drawable.grey4));
-            }
-            if (die.getValue() == 5) {
-                die.setImage(BitmapFactory.decodeResource(this
-                        .getResources(), R.drawable.grey5));
-            }
-            if (die.getValue() == 6) {
-                die.setImage(BitmapFactory.decodeResource(this
-                        .getResources(), R.drawable.grey6));
-            }
+            setDieGrey(die.getValue(), die);
         }
         updateDiceImages();
+    }
+
+    /**
+     * Changes the image of a die to grey
+     *
+     * @param dieValue Value of the die
+     * @param die Die to give a new image
+     */
+    public void setDieGrey(int dieValue, Die die) {
+        if (dieValue == 1) {
+            die.setImage(BitmapFactory.decodeResource(this
+                    .getResources(), R.drawable.grey1));
+        }
+        if (dieValue == 2) {
+            die.setImage(BitmapFactory.decodeResource(this
+                    .getResources(), R.drawable.grey2));
+        }
+        if (dieValue == 3) {
+            die.setImage(BitmapFactory.decodeResource(this
+                    .getResources(), R.drawable.grey3));
+        }
+        if (dieValue == 4) {
+            die.setImage(BitmapFactory.decodeResource(this
+                    .getResources(), R.drawable.grey4));
+        }
+        if (dieValue == 5) {
+            die.setImage(BitmapFactory.decodeResource(this
+                    .getResources(), R.drawable.grey5));
+        }
+        if (dieValue == 6) {
+            die.setImage(BitmapFactory.decodeResource(this
+                    .getResources(), R.drawable.grey6));
+        }
+    }
+
+    /**
+     * Changes the image of a die to white
+     *
+     * @param dieValue Value of the die
+     * @param die Die to give a new image
+     */
+    public void setDieWhite(int dieValue, Die die) {
+        if (dieValue == 1) {
+            die.setImage(BitmapFactory.decodeResource(this
+                    .getResources(), R.drawable.white1));
+        }
+        if (dieValue == 2) {
+            die.setImage(BitmapFactory.decodeResource(this
+                    .getResources(), R.drawable.white2));
+        }
+        if (dieValue == 3) {
+            die.setImage(BitmapFactory.decodeResource(this
+                    .getResources(), R.drawable.white3));
+        }
+        if (dieValue == 4) {
+            die.setImage(BitmapFactory.decodeResource(this
+                    .getResources(), R.drawable.white4));
+        }
+        if (dieValue == 5) {
+            die.setImage(BitmapFactory.decodeResource(this
+                    .getResources(), R.drawable.white5));
+        }
+        if (dieValue == 6) {
+            die.setImage(BitmapFactory.decodeResource(this
+                    .getResources(), R.drawable.white6));
+        }
+    }
+
+    /**
+     * Changes the image of a die to red
+     *
+     * @param dieValue Value of the die
+     * @param die Die to give a new image
+     */
+    public void setDieRed(int dieValue, Die die) {
+        if (dieValue == 1) {
+            die.setImage(BitmapFactory.decodeResource(this
+                    .getResources(), R.drawable.red1));
+        }
+        if (dieValue == 2) {
+            die.setImage(BitmapFactory.decodeResource(this
+                    .getResources(), R.drawable.red2));
+        }
+        if (dieValue == 3) {
+            die.setImage(BitmapFactory.decodeResource(this
+                    .getResources(), R.drawable.red3));
+        }
+        if (dieValue == 4) {
+            die.setImage(BitmapFactory.decodeResource(this
+                    .getResources(), R.drawable.red4));
+        }
+        if (dieValue == 5) {
+            die.setImage(BitmapFactory.decodeResource(this
+                    .getResources(), R.drawable.red5));
+        }
+        if (dieValue == 6) {
+            die.setImage(BitmapFactory.decodeResource(this
+                    .getResources(), R.drawable.red6));
+        }
     }
 
     /**
@@ -205,13 +304,13 @@ public class MainActivity extends AppCompatActivity {
 
         if (getResources().getConfiguration().orientation == 1) {
             roundScorePortrait.setText(String.valueOf(PLAYER.getRoundScore())
-                    +" (+"+ String.valueOf(PLAYER.getThrowScore())+"/"+String
-                    .valueOf(PLAYER.getMaxRoundScore()+")"));
+                    + " (+" + String.valueOf(PLAYER.getThrowScore()) + "/" + String
+                    .valueOf(PLAYER.getMaxRoundScore() + ")"));
             totalScorePortrait.setText(String.valueOf(PLAYER.getTotalScore()));
         } else {
             roundScoreLandscape.setText(String.valueOf(PLAYER.getRoundScore())
-                    +" (+"+ String.valueOf(PLAYER.getThrowScore())+"/"+String
-                    .valueOf(PLAYER.getMaxRoundScore()+")"));
+                    + " (+" + String.valueOf(PLAYER.getThrowScore()) + "/" + String
+                    .valueOf(PLAYER.getMaxRoundScore() + ")"));
             totalScoreLandscape.setText(String.valueOf(PLAYER.getTotalScore()));
         }
     }
@@ -226,30 +325,7 @@ public class MainActivity extends AppCompatActivity {
         for (Die die : PLAYER.getDieList()) {
             if (die.isActive()) {
                 die.setValue(rand.nextInt(7 - 1) + 1);
-            }
-            if (die.getValue() == 1 && die.isActive()) {
-                die.setImage(BitmapFactory.decodeResource(this
-                        .getResources(), R.drawable.grey1));
-            }
-            if (die.getValue() == 2 && die.isActive()) {
-                die.setImage(BitmapFactory.decodeResource(this
-                        .getResources(), R.drawable.grey2));
-            }
-            if (die.getValue() == 3 && die.isActive()) {
-                die.setImage(BitmapFactory.decodeResource(this
-                        .getResources(), R.drawable.grey3));
-            }
-            if (die.getValue() == 4 && die.isActive()) {
-                die.setImage(BitmapFactory.decodeResource(this
-                        .getResources(), R.drawable.grey4));
-            }
-            if (die.getValue() == 5 && die.isActive()) {
-                die.setImage(BitmapFactory.decodeResource(this
-                        .getResources(), R.drawable.grey5));
-            }
-            if (die.getValue() == 6 && die.isActive()) {
-                die.setImage(BitmapFactory.decodeResource(this
-                        .getResources(), R.drawable.grey6));
+                setDieGrey(die.getValue(), die);
             }
         }
         updateDiceImages();
@@ -261,7 +337,7 @@ public class MainActivity extends AppCompatActivity {
      * Calculates the score a user gets on one throw for the selected dices
      * The inital score is calculated only by the active dices whereas the
      * round score is then calculated byt the dices selected by the player
-     *
+     * <p/>
      * Inactive dices which is dices already used to calculate score during
      * this round will not be used to further calculate the score since they
      * already gave points for total round scoer
@@ -442,36 +518,17 @@ public class MainActivity extends AppCompatActivity {
         if (straight || sixOfAKind) {
             for (Die die : PLAYER.getDieList()) {
                 die.setSelectable(true);
-                if (die.getValue() == 1) {
-                    die.setImage(BitmapFactory.decodeResource(this
-                            .getResources(), R.drawable.white1));
-                } else if (die.getValue() == 2) {
-                    die.setImage(BitmapFactory.decodeResource(this
-                            .getResources(), R.drawable.white2));
-                } else if (die.getValue() == 3) {
-                    die.setImage(BitmapFactory.decodeResource(this
-                            .getResources(), R.drawable.white3));
-                } else if (die.getValue() == 4) {
-                    die.setImage(BitmapFactory.decodeResource(this
-                            .getResources(), R.drawable.white4));
-                } else if (die.getValue() == 5) {
-                    die.setImage(BitmapFactory.decodeResource(this
-                            .getResources(), R.drawable.white5));
-                } else if (die.getValue() == 6) {
-                    die.setImage(BitmapFactory.decodeResource(this
-                            .getResources(), R.drawable.white6));
-                }
+                setDieWhite(die.getValue(), die);
             }
         } else {
-            //Three of ones
             int diceCount;
+            //Three of ones
             if (ones >= 3) {
                 diceCount = 0;
                 for (Die die : PLAYER.getDieList()) {
                     if (die.getValue() == 1 && diceCount < 3) {
-                        die.setImage(BitmapFactory.decodeResource(this
-                                .getResources(), R.drawable.white1));
                         die.setSelectable(true);
+                        setDieWhite(die.getValue(), die);
                         diceCount++;
                     }
                 }
@@ -481,8 +538,7 @@ public class MainActivity extends AppCompatActivity {
                 diceCount = 0;
                 for (Die die : PLAYER.getDieList()) {
                     if (die.getValue() == 2 && diceCount < 3) {
-                        die.setImage(BitmapFactory.decodeResource(this
-                                .getResources(), R.drawable.white2));
+                        setDieWhite(die.getValue(), die);
                         die.setSelectable(true);
                         diceCount++;
                     }
@@ -493,8 +549,7 @@ public class MainActivity extends AppCompatActivity {
                 diceCount = 0;
                 for (Die die : PLAYER.getDieList()) {
                     if (die.getValue() == 3 && diceCount < 3) {
-                        die.setImage(BitmapFactory.decodeResource(this
-                                .getResources(), R.drawable.white3));
+                        setDieWhite(die.getValue(), die);
                         die.setSelectable(true);
                         diceCount++;
                     }
@@ -505,8 +560,7 @@ public class MainActivity extends AppCompatActivity {
                 diceCount = 0;
                 for (Die die : PLAYER.getDieList()) {
                     if (die.getValue() == 4 && diceCount < 3) {
-                        die.setImage(BitmapFactory.decodeResource(this
-                                .getResources(), R.drawable.white4));
+                        setDieWhite(die.getValue(), die);
                         die.setSelectable(true);
                         diceCount++;
                     }
@@ -517,8 +571,7 @@ public class MainActivity extends AppCompatActivity {
                 diceCount = 0;
                 for (Die die : PLAYER.getDieList()) {
                     if (die.getValue() == 5 && diceCount < 3) {
-                        die.setImage(BitmapFactory.decodeResource(this
-                                .getResources(), R.drawable.white5));
+                        setDieWhite(die.getValue(), die);
                         die.setSelectable(true);
                         diceCount++;
                     }
@@ -529,8 +582,7 @@ public class MainActivity extends AppCompatActivity {
                 diceCount = 0;
                 for (Die die : PLAYER.getDieList()) {
                     if (die.getValue() == 6 && diceCount < 3) {
-                        die.setImage(BitmapFactory.decodeResource(this
-                                .getResources(), R.drawable.white6));
+                        setDieWhite(die.getValue(), die);
                         die.setSelectable(true);
                         diceCount++;
                     }
@@ -541,13 +593,11 @@ public class MainActivity extends AppCompatActivity {
         // Loose one or fives
         for (Die die : PLAYER.getDieList()) {
             if (die.getValue() == 1 && die.isActive()) {
-                die.setImage(BitmapFactory.decodeResource(this
-                        .getResources(), R.drawable.white1));
+                setDieWhite(die.getValue(), die);
                 die.setSelectable(true);
             }
             if (die.getValue() == 5 && die.isActive()) {
-                die.setImage(BitmapFactory.decodeResource(this
-                        .getResources(), R.drawable.white5));
+                setDieWhite(die.getValue(), die);
                 die.setSelectable(true);
             }
         }
@@ -583,149 +633,21 @@ public class MainActivity extends AppCompatActivity {
             die.deselect();
             die.setSelectable(false);
         }
-        makeDicesInactive();
+        makeDiceInactive();
     }
 
     /**
      * Gets the value of a dice and checks if it's active or not then selects
      * it making it red and is then used to calculate how much score a user gets
      *
-     * @param dice which dice to select
+     * @param die which dice to select
      */
-    public void selectDice(int dice) {
-        if (dice == 1 && PLAYER.getDieList().get(dice - 1).isSelectable
-                ()) {
-            PLAYER.getDieList().get(dice - 1).select();
-            if (PLAYER.getDieList().get(dice - 1).getValue() == 1) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red1));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 2) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red2));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 3) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red3));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 4) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red4));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 5) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red5));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 6) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red6));
-            }
-        } else if (dice == 2 && PLAYER.getDieList().get(dice - 1)
-                .isSelectable()) {
-            PLAYER.getDieList().get(dice - 1).select();
-            if (PLAYER.getDieList().get(dice - 1).getValue() == 1) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red1));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 2) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red2));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 3) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red3));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 4) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red4));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 5) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red5));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 6) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red6));
-            }
-        } else if (dice == 3 && PLAYER.getDieList().get(dice - 1)
-                .isSelectable()) {
-            PLAYER.getDieList().get(dice - 1).select();
-            if (PLAYER.getDieList().get(dice - 1).getValue() == 1) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red1));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 2) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red2));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 3) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red3));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 4) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red4));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 5) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red5));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 6) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red6));
-            }
-        } else if (dice == 4 && PLAYER.getDieList().get(dice - 1)
-                .isSelectable()) {
-            PLAYER.getDieList().get(dice - 1).select();
-            if (PLAYER.getDieList().get(dice - 1).getValue() == 1) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red1));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 2) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red2));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 3) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red3));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 4) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red4));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 5) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red5));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 6) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red6));
-            }
-        } else if (dice == 5 && PLAYER.getDieList().get(dice - 1)
-                .isSelectable()) {
-            PLAYER.getDieList().get(dice - 1).select();
-            if (PLAYER.getDieList().get(dice - 1).getValue() == 1) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red1));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 2) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red2));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 3) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red3));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 4) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red4));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 5) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red5));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 6) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red6));
-            }
-        } else if (dice == 6 && PLAYER.getDieList().get(dice - 1)
-                .isSelectable()) {
-            PLAYER.getDieList().get(dice - 1).select();
-            if (PLAYER.getDieList().get(dice - 1).getValue() == 1) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red1));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 2) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red2));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 3) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red3));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 4) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red4));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 5) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red5));
-            } else if (PLAYER.getDieList().get(dice - 1).getValue() == 6) {
-                PLAYER.getDieList().get(dice - 1).setImage(BitmapFactory
-                        .decodeResource(this.getResources(), R.drawable.red6));
-            }
+    public void selectDice(Die die) {
+        if (die.isSelectable()) {
+            die.select();
+            setDieRed(die.getValue(), die);
         }
+
         updateDiceImages();
     }
 
@@ -736,13 +658,13 @@ public class MainActivity extends AppCompatActivity {
      * @param toastString which toast text to show
      */
     public void showToast(String toastString) {
-        if(toastString.equals("score")) {
+        if (toastString.equals("score")) {
             Toast toast = Toast.makeText(MainActivity.this, "Round score " +
                     "added " +
                     "to total " +
                     "score, Throw again to start new round)", Toast
                     .LENGTH_SHORT);
-            if(getResources().getConfiguration().orientation == 1) {
+            if (getResources().getConfiguration().orientation == 1) {
                 toast.setGravity(Gravity.CENTER_VERTICAL | Gravity
                                 .CENTER_HORIZONTAL, 0,
                         0);
@@ -752,11 +674,11 @@ public class MainActivity extends AppCompatActivity {
             }
             toast.show();
         }
-        if(toastString.equals("failFirstRound")) {
+        if (toastString.equals("failFirstRound")) {
             Toast toast = Toast.makeText(this, "Failed to reach 300 on first " +
                     "throw, " +
                     "starting new round)", Toast.LENGTH_SHORT);
-            if(getResources().getConfiguration().orientation == 1) {
+            if (getResources().getConfiguration().orientation == 1) {
                 toast.setGravity(Gravity.CENTER_VERTICAL | Gravity
                                 .CENTER_HORIZONTAL, 0,
                         0);
@@ -766,11 +688,11 @@ public class MainActivity extends AppCompatActivity {
             }
             toast.show();
         }
-        if(toastString.equals("failRound")) {
+        if (toastString.equals("failRound")) {
             Toast toast = Toast.makeText(this, "Failed to score on this " +
                     "throw, " +
                     "starting new round)", Toast.LENGTH_SHORT);
-            if(getResources().getConfiguration().orientation == 1) {
+            if (getResources().getConfiguration().orientation == 1) {
                 toast.setGravity(Gravity.CENTER_VERTICAL | Gravity
                                 .CENTER_HORIZONTAL, 0,
                         0);
@@ -787,7 +709,7 @@ public class MainActivity extends AppCompatActivity {
      * active dices. Also makes all unselected dices active, meaning they
      * will be thrown again
      */
-    public class ThrowListener implements View.OnClickListener {
+    private class ThrowListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
@@ -800,10 +722,10 @@ public class MainActivity extends AppCompatActivity {
                     diceScored++;
                     die.deactivate();
                 }
-                    die.setSelectable(false);
+                die.setSelectable(false);
             }
             //Resets the dices if all dices are selected to give points
-            if(diceScored >= 6) {
+            if (diceScored >= 6) {
                 for (Die die : PLAYER.getDieList()) {
                     die.activate();
                     die.deselect();
@@ -818,18 +740,18 @@ public class MainActivity extends AppCompatActivity {
      * Listener for the Score button which calls methods to save the players
      * current round score then start a new round
      */
-    public class ScoreListener implements View.OnClickListener {
+    private class ScoreListener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
             PLAYER.setRoundScore(PLAYER.getRoundScore() + PLAYER
                     .getThrowScore());
-            if(PLAYER.getThrowScore() > 0) {
+            if (PLAYER.getThrowScore() > 0) {
                 showToast("score");
                 newRound();
                 PLAYER.setThrowScore(0);
             }
-            if(PLAYER.getTotalScore() >= PLAYER.getWinScore()) {
+            if (PLAYER.getTotalScore() >= PLAYER.getWinScore()) {
                 Intent intent = new Intent(MainActivity.this, WinActivity
                         .class);
                 intent.putExtra("score", String.valueOf(PLAYER.getTotalScore
@@ -843,11 +765,11 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Listener for the dice image to make it selected
      */
-    public class Dice1Listener implements View.OnClickListener {
+    private class Dice1Listener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
-            selectDice(1);
+            selectDice(PLAYER.getDieList().get(0));
             calculateScore(false);
         }
     }
@@ -855,11 +777,11 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Listener for the dice image to make it selected
      */
-    public class Dice2Listener implements View.OnClickListener {
+    private class Dice2Listener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
-            selectDice(2);
+            selectDice(PLAYER.getDieList().get(1));
             calculateScore(false);
         }
     }
@@ -867,11 +789,11 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Listener for the dice image to make it selected
      */
-    public class Dice3Listener implements View.OnClickListener {
+    private class Dice3Listener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
-            selectDice(3);
+            selectDice(PLAYER.getDieList().get(2));
             calculateScore(false);
         }
     }
@@ -879,11 +801,11 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Listener for the dice image to make it selected
      */
-    public class Dice4Listener implements View.OnClickListener {
+    private class Dice4Listener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
-            selectDice(4);
+            selectDice(PLAYER.getDieList().get(3));
             calculateScore(false);
         }
     }
@@ -891,11 +813,11 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Listener for the dice image to make it selected
      */
-    public class Dice5Listener implements View.OnClickListener {
+    private class Dice5Listener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
-            selectDice(5);
+            selectDice(PLAYER.getDieList().get(4));
             calculateScore(false);
         }
     }
@@ -903,11 +825,11 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Listener for the dice image to make it selected
      */
-    public class Dice6Listener implements View.OnClickListener {
+    private class Dice6Listener implements View.OnClickListener {
 
         @Override
         public void onClick(View v) {
-            selectDice(6);
+            selectDice(PLAYER.getDieList().get(5));
             calculateScore(false);
         }
     }

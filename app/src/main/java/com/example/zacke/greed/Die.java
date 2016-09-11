@@ -3,11 +3,12 @@ package com.example.zacke.greed;
 import android.graphics.Bitmap;
 
 /**
- * Created by Zacke on 2016-02-10.
- *
  * Class that represents a dice and holds values for if a dice is selected or
  * active. Also holds a bitmap for the image and a value for the dice
  * Should be static final so it won't reset stats with activity being destroyed
+ *
+ * @author Joakim Zakrisson
+ * @version 2016-02-10
  */
 public class Die {
 

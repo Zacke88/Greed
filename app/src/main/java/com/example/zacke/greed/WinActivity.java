@@ -10,10 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
- * Created by Zacke on 2016-02-10.
- *
  * Activity is shown after the player has reached the score to win the game
  * and is used to display a victory screen for the player
+ *
+ * @author Joakim Zakrisson
+ * @version 2016-02-10
  */
 public class WinActivity extends AppCompatActivity {
 

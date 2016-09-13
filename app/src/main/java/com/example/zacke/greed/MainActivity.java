@@ -95,12 +95,6 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setDisplayUseLogoEnabled(true);
             actionBar.setDisplayShowHomeEnabled(true);
         }
-        Log.e("die", String.valueOf(R.drawable.grey1));
-        Log.e("die", String.valueOf(R.drawable.grey2));
-        Log.e("die", String.valueOf(R.drawable.grey3));
-        Log.e("die", String.valueOf(R.drawable.grey4));
-        Log.e("die", String.valueOf(R.drawable.grey5));
-        Log.e("die", String.valueOf(R.drawable.grey6));
 
         initiateLists();
         setDices();
@@ -145,13 +139,11 @@ public class MainActivity extends AppCompatActivity {
         if (PLAYER.getDieList().isEmpty()) {
             PLAYER.getDieList().addAll(dice);
         }
-
         TextView text = (TextView) findViewById(R.id.dicePos);
         text.setText("");
 
         //Scale all dice images
         for (ImageView imageView : diceImages) {
-            Log.e("loop", "LOOPEN");
             imageView.setScaleX((float) 0.7);
             imageView.setScaleY((float) 0.7);
         }
@@ -522,6 +514,7 @@ public class MainActivity extends AppCompatActivity {
             }
         } else {
             int diceCount;
+
             //Three of ones
             if (ones >= 3) {
                 diceCount = 0;
